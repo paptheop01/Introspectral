@@ -1,4 +1,4 @@
-# introspectral
+# Introspectral
 
 A new Flutter project.
 
