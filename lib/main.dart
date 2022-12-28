@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -22,9 +24,10 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
+        canvasColor: Color.fromARGB(255, 241, 186, 255),
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page Vounalaki'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page Vounalaki roz'),
     );
   }
 }
