@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
+import 'package:introspectral/habit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,13 @@ class HomeScreenWidget extends StatefulWidget {
 
 
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
+  void _gotohabits(){
+    Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => HabitListScreenWidget() ));
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -49,9 +57,17 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
           child: new Text("Hello background"),
         )
       ],
-    )
-  );
+    ),
+    floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: _gotohabits,
+        backgroundColor: Colors.teal,
+        tooltip: 'Add Task',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+    );
+    }
+  
 }
 
 
-}

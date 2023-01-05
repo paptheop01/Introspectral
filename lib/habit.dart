@@ -19,15 +19,15 @@ class HabitListScreenWidget extends StatefulWidget {
 class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   
   late SQLservice sqLiteservice;
-  List<Task> _tasks=<Task>[];
-  void _addNewTask() async{
-     Task? newTask= await Navigator.of(context).push(MaterialPageRoute(
+  List<Habit> _habits=<Habit>[];
+  void _addNewHabit() async{
+     Habit? newHabit= await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ViewEditHabitWidget() ));
-      if(newTask!=null){
-        final newId=await sqLiteservice.addTask(newTask);
-        newTask.id=newId;
+      if(newHabit!=null){
+        final newId=await sqLiteservice.addHabit(newHabit);
+        newHabit.id=newId;
 
-        _tasks.add(newTask);
+        _habits.add(newHabit);
         setState(() {
           
         });
@@ -40,9 +40,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
     super.initState();
     sqLiteservice=SQLservice();
     sqLiteservice.initDB().whenComplete(() async{
-      final tasks= await sqLiteservice.getTasks();
+      final habits= await sqLiteservice.getHabits();
       setState(() {
-        _tasks=tasks;
+        _habits=habits;
       });
     });
     
@@ -57,35 +57,30 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         String toolTip;
         TextDecoration textDEc;
 
-        iconData=_tasks[index].completed ?  Icons.check_box_outlined:  Icons.check_box_outline_blank_outlined;
-        toolTip=_tasks[index].completed ?  'Mark as Incomplete':  'Mark as completed';
-        textDEc=_tasks[index].completed ?  TextDecoration.lineThrough:  TextDecoration.none;
+        iconData=  Icons.check_box_outline_blank_outlined;
+        toolTip=  'Mark as completed';
+        textDEc=  TextDecoration.none;
         return ListTile(
           
 
           leading: IconButton(
             icon:  Icon(iconData),
             onPressed: () {
-              _tasks[index].completed = _tasks[index].completed? false:true ;
-              sqLiteservice.updateComplete(_tasks[index]);
+              _habits[index].completed = _habits[index].completed +1 ;
+              sqLiteservice.updateComplete(_habits[index]);
               setState(() {
                 
               });
             },
             tooltip: toolTip,),
-          title: Text(_tasks[index].title,
+          title: Text(_habits[index].title,
               style: TextStyle(decoration: textDEc),),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Visibility(
-                visible: _tasks[index].alarm==null? false:true,
-                child: Text(_tasks[index].alarm!=null ? _tasks[index].alarm!.format(context):'',
-                style: TextStyle(decoration: textDEc),)
-                ),
-                IconButton(onPressed: () {_deleteTask(index);}, 
+                IconButton(onPressed: () {_deleteHabit(index);}, 
                 icon: Icon(Icons.delete),
-                tooltip: 'Delete Task',),
+                tooltip: 'Delete Habit',),
                 
             ],
           ),
@@ -93,15 +88,15 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         );},
         
       separatorBuilder: (context, index) =>const Divider(),
-      itemCount: _tasks.length,
+      itemCount: _habits.length,
     );
   }
 
-  void _deleteTask(int idx) async{
-    bool? delTask = await showDialog<bool>(
+  void _deleteHabit(int idx) async{
+    bool? delHabit = await showDialog<bool>(
       context: context, 
       builder: (BuildContext context) => AlertDialog(
-        content: const Text('Delete Task?'),
+        content: const Text('Delete Habit?'),
         actions: <Widget>[
           TextButton(onPressed: () => Navigator.pop(context,false), 
           child: const Text('cancel')),
@@ -109,13 +104,13 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
           child: const Text('delete')),
         ],
       ));
-    if(delTask!){
-      final task=_tasks.elementAt(idx);
+    if(delHabit!){
+      final habit=_habits.elementAt(idx);
       try{
-        sqLiteservice.deleteTask(task.id);
-        _tasks.removeAt(idx);
+        sqLiteservice.deleteHabit(habit.id);
+        _habits.removeAt(idx);
       } catch (err) {
-          debugPrint('Could not delete task $task : $err');
+          debugPrint('Could not delete habit $habit : $err');
       }
       setState(() {
         
@@ -142,9 +137,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         color: Colors.blue,),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _addNewTask,
+        onPressed: _addNewHabit,
         backgroundColor: Colors.teal,
-        tooltip: 'Add Task',
+        tooltip: 'Add Habit',
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
@@ -153,37 +148,29 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
 }
 
 
-class Task {
+class Habit {
   int? id;
   String title;
-  String? description;
-  TimeOfDay? alarm;
-  bool completed;
-  Task({
+  int completed;
+  int goal;
+  Habit({
     this.id,
     required this.title, 
-    this.description, 
-    this.alarm, 
+    required this.goal,
     required this.completed }); 
 
 
   Map<String,dynamic> toMap(){
-    final record={'title':title,'completed':completed?1:0};
-    if(description!=null){
-      record.addAll({'description':'$description'});
-    }
-    if(alarm!=null){
-      record.addAll({'alarm':'${alarm!.hour}:${alarm!.minute}'});
-    }
+    final record={'title':title,'completed':completed,'goal':goal};
+    
     return record;
 
   }
-  Task.fromMap(Map<String,dynamic> task):
-    id=task['id'],
-    title=task['title'],
-    description=task['description'],
-    alarm=(task['alarm']!=null) ? TimeOfDay(hour: int.parse(task['alarm'].split(':')[0]), minute:int.parse(task['alarm'].split(':')[1]) ):null ,
-    completed= task['completed']==1 ? true : false;
+  Habit.fromMap(Map<String,dynamic> habit):
+    id=habit['id'],
+    title=habit['title'],
+    completed= habit['completed'],
+    goal=habit['goal'];
 
 
 
@@ -197,41 +184,41 @@ class SQLservice{
       p.join(await getDatabasesPath(), 'habits.db'),
       onCreate:(db, version) {
         return db.execute(
-          'CREATE TABLE habits(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed REAL)'
+          'CREATE TABLE habits(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed INTEGER,goal INTEGER)'
         );
       },
       version: 1, 
     );
   
   }
-  Future <List<Task>> getTasks() async{
+  Future <List<Habit>> getHabits() async{
     final db=await initDB();
     final List<Map<String,Object?>> queryResult= await db.query('habits');
-    return queryResult.map((e) => Task.fromMap(e)).toList();
+    return queryResult.map((e) => Habit.fromMap(e)).toList();
   }
-  Future<int> addTask(Task task) async{
+  Future<int> addHabit(Habit habit) async{
     final db= await initDB();
-    return db.insert('habits', task.toMap(),
+    return db.insert('habits', habit.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future <void> deleteTask(final id) async{
+  Future <void> deleteHabit(final id) async{
     final db= await initDB();
     await db.delete('habits',where: 'id=?',whereArgs: [id]);
   }
 
 
-  Future <void> updateComplete(Task task) async{
+  Future <void> updateComplete(Habit habit) async{
     final db= await initDB();
-    await db.update('tasks',{'completed':task.completed?1:0},where: 'id=?',whereArgs: [task.id],conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.update('habits',{'completed':habit.completed},where: 'id=?',whereArgs: [habit.id],conflictAlgorithm: ConflictAlgorithm.replace);
   }
   Future <void> deleteCompleted() async{
     final db= await initDB();
-    await db.delete('tasks',where: 'completed=1');
+    await db.delete('habits',where: 'completed=1');
   }
-  Future <void> deleteAllTasks() async{
+  Future <void> deleteAllHabits() async{
     final db= await initDB();
-    await db.delete('tasks');
+    await db.delete('habits');
   }
 
 }
