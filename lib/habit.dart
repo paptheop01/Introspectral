@@ -97,7 +97,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                   ),
                   height: 50,
                   padding:
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 15.0),
                   child: Text(
                     _habits[index].title,
                     style: TextStyle(
