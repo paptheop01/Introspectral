@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
 import 'package:introspectral/habit.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as p;
 
 void main() {
   runApp(const MyApp());
@@ -113,9 +114,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
 
 
-
-
-
 class Habit {
   int? id;
   String title;
@@ -139,6 +137,9 @@ class Habit {
         completed = habit['completed'],
         goal = habit['goal'];
 }
+
+
+
 
 class SQLservice {
   Future<Database> initDB() async {
@@ -187,4 +188,8 @@ class SQLservice {
     await db.delete('habits');
   }
 }
+
+
+
+
 
