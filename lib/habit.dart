@@ -8,6 +8,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
 
+
+
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key?key}) : super(key:key);
 
@@ -60,7 +62,61 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         iconData=  Icons.check_box_outline_blank_outlined;
         toolTip=  'Mark as completed';
         textDEc=  TextDecoration.none;
-        return ListTile(
+        
+        return Stack(
+          
+          children:[/*Center(child:Container(
+              height: 50,
+                decoration: BoxDecoration(
+
+                  borderRadius:BorderRadius.circular(25) ,
+                  color: Colors.red,
+                ),
+              )),*/
+             Dismissible(
+              background:Container(
+               
+              height: 50,
+                decoration: BoxDecoration(
+
+                  borderRadius:BorderRadius.circular(25) ,
+                  color: Colors.blue,) ,),
+              key: UniqueKey() ,  
+                
+              
+              direction: DismissDirection.startToEnd,
+              onDismissed: (direction) {
+                // Remove the item from the list
+               
+                _deleteHabit(index);
+              },
+              
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Center(
+                  child: Text(_habits[index].title
+                    ,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  )
+                )
+              )
+              )
+          ]
+          );
+              },
+    
+        
+        
+        
+        
+        /*return ListTile(
           
 
           leading: IconButton(
@@ -86,14 +142,14 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
           ),
         
         );},
-        
+        */
       separatorBuilder: (context, index) =>const Divider(),
       itemCount: _habits.length,
     );
   }
 
   void _deleteHabit(int idx) async{
-    bool? delHabit = await showDialog<bool>(
+    bool? delHabit =true;/* await showDialog<bool>(
       context: context, 
       builder: (BuildContext context) => AlertDialog(
         content: const Text('Delete Habit?'),
@@ -103,12 +159,15 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
           TextButton(onPressed: () => Navigator.pop(context,true), 
           child: const Text('delete')),
         ],
-      ));
-    if(delHabit!){
+      ));*/
+    if(delHabit){
       final habit=_habits.elementAt(idx);
       try{
+        
         sqLiteservice.deleteHabit(habit.id);
+        
         _habits.removeAt(idx);
+        
       } catch (err) {
           debugPrint('Could not delete habit $habit : $err');
       }
@@ -119,13 +178,22 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
     }  
 
   }
-  double timeOfDaytoDouble(TimeOfDay myTime) => myTime.hour+myTime.minute /60;
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       
-      body : _buildHabitList(),
+      body : Stack(
+      children: <Widget>[
+          Container(
+          decoration:  BoxDecoration(
+            image:  DecorationImage(image:  AssetImage("assets/images/back.png"), fit: BoxFit.cover,),
+          ),
+        ), 
+        _buildHabitList(),
+        ]
+        ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisSize: MainAxisSize.max,
