@@ -6,6 +6,8 @@ import 'package:introspectral/habitadd.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import 'main.dart';
+
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key? key}) : super(key: key);
 
@@ -172,10 +174,10 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HomeScreenWidget()));
         break;
       case 1:
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => HabitListScreenWidget()));
         break;
       case 2:
         break;
@@ -226,7 +228,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
             label: 'Stats',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: 1,
         onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
