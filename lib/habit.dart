@@ -91,23 +91,39 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                 _deleteHabit(index);
               },
               
-              child: Container(
+              child: Stack(children: [Container(
                 height: 50,
+                
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: Color(0x3300FF19),
+                  borderRadius: BorderRadius.circular(25),
+                )),
+               
+                Container(
+                height: 50,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Color(0xFF00FF19),
+                  borderRadius: BorderRadius.circular(25),
+                )),
+                 Container( 
+                  decoration: BoxDecoration(
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: Center(
-                  child: Text(_habits[index].title
-                    ,
+                  height: 50,
+                  padding: EdgeInsets.symmetric(vertical: 12.0,horizontal: 8.0),
+                  child: Text(_habits[index].title,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 16,
                     ),
                   )
-                )
+                ),
+                ]),
+                 
               )
-              )
+              
           ]
           );
               },
