@@ -1,4 +1,4 @@
-import 'habit.dart';
+import 'main.dart';
 import 'package:flutter/material.dart';
 
 class ViewEditHabitWidget extends StatefulWidget {
