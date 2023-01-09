@@ -15,10 +15,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Introspectral',
       theme: ThemeData(
-        canvasColor: Color.fromARGB(255, 241, 186, 255),
-        primarySwatch: Colors.blue,
+        canvasColor: Color.fromARGB(255, 69, 139, 127),
+        primarySwatch: Colors.blueGrey,
       ),
       home: const HomeScreenWidget(),
     );
@@ -75,7 +76,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Color.fromARGB(61, 0, 0, 0),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        fixedColor: Color.fromARGB(136, 0, 0, 0),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
