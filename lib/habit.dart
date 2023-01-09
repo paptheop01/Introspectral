@@ -201,7 +201,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         _buildHabitList(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Color.fromARGB(61, 0, 0, 0),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        fixedColor: Color.fromARGB(136, 0, 0, 0),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
