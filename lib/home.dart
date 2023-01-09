@@ -36,50 +36,11 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Stack(
-        children: <Widget>[
-          new Container(
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                image: new AssetImage("assets/images/back.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          new Center(
-            child: new Text("Hello background"),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        fixedColor: Color.fromARGB(136, 0, 0, 0),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Habits',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note),
-            label: 'Log',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Stats',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: _onItemTapped,
+    return Container(
+      child: Scaffold(
+        body: Center(
+          child: Text('This is the Pordula Screen'),
+        ),
       ),
     );
   }

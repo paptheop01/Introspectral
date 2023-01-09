@@ -23,11 +23,106 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Introspectral',
       theme: ThemeData(
-        canvasColor: Color.fromARGB(255, 69, 139, 127),
+        canvasColor: Color.fromARGB(255, 69, 139, 127).withOpacity(0.3),
         primarySwatch: Colors.blueGrey,
       ),
-      home: const HomeScreenWidget(),
+      home: const MyHomePage(title: "Introspectral"),
     );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+  final _pageController = PageController();
+  List<Widget> _pages = [];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = <Widget>[
+      HomeScreenWidget(),
+      HabitListScreenWidget(),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/back.png"),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1),
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        child: Scaffold(
+          body: PageView(
+            controller: _pageController,
+            children: _pages,
+            onPageChanged: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: _onItemTapped,
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.green, // SELECTED TAB COLOR
+            unselectedItemColor: const Color(0xCFFFFFFF),
+            backgroundColor: Colors.grey, // BACKGROUND COLOR
+            iconSize: 30,
+            selectedFontSize: 15,
+            unselectedFontSize: 15,
+            elevation: 12,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Habits',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.note),
+                label: 'Log',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today),
+                label: 'Calendar',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.show_chart),
+                label: 'Stats',
+              ),
+            ],
+          ),
+        ));
   }
 }
 
