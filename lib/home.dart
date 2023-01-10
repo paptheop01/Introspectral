@@ -3,6 +3,8 @@ import 'package:introspectral/habitadd.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'habit.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   const HomeScreenWidget({Key? key}) : super(key: key);
@@ -12,18 +14,69 @@ class HomeScreenWidget extends StatefulWidget {
 }
 
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
-  /*
-  Future<void> persistwatercups(int watercups) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('watercups', watercups);
+  late SQLservice sqLiteservice;
+  int density = 0;
+  List<Habit> _habits = <Habit>[];
+  @override
+  void _addNewHabit() async {
+    Habit? newHabit = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));
+    if (newHabit != null) {
+      final newId = await sqLiteservice.addHabit(newHabit);
+      newHabit.id = newId;
+
+      _habits.add(newHabit);
+      setState(() {});
+    }
   }
 
-  Future<int> loadwatercups() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('watercups') ?? 0;
+  void initState() {
+    super.initState();
+    sqLiteservice = SQLservice();
+    sqLiteservice.initDB().whenComplete(() async {
+      final habits = await sqLiteservice.getHabits();
+      setState(() {
+        _habits = habits;
+      });
+    });
   }
-*/
+
   int watercups = 0;
+
+  Widget _buildHabitList() {
+    return ListView.separated(
+      padding: const EdgeInsets.all(8.0),
+      itemBuilder: (context, index) {
+        IconData iconData;
+        String toolTip;
+        TextDecoration textDEc;
+
+        iconData = Icons.check_box_outline_blank_outlined;
+        toolTip = 'Mark as completed';
+        textDEc = TextDecoration.none;
+
+        return ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 1.0, vertical: -4.0),
+          leading: CircleAvatar(
+            backgroundColor: Colors.white,
+            radius: 30.0,
+            child: Icon(
+              Icons.favorite,
+              color: Colors.red,
+              size: 35.0,
+            ),
+          ),
+          title: Text(
+            _habits[index].title,
+            style: TextStyle(decoration: textDEc),
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: _habits.length,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +84,28 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          Positioned(
+            top: 100,
+            left: 20,
+            child: Container(
+              width: 190,
+              height: 250,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+            ),
+          ),
+          Container(
+            height: 350,
+            child: Transform.translate(
+              offset: Offset(0, 100),
+              child: _buildHabitList(),
+            ),
+          ),
           Positioned(
             top: 150,
             right: 20,

@@ -12,6 +12,7 @@ import 'package:flutter/src/painting/box_decoration.dart';
 import 'package:introspectral/habit.dart';
 import 'package:introspectral/home.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:introspectral/calendar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pages = <Widget>[
       HomeScreenWidget(),
       HabitListScreenWidget(),
+      CalendarScreenWidget(),
     ];
   }
 
