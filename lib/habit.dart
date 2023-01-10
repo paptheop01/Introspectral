@@ -1,9 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
 import 'main.dart';
+<<<<<<< HEAD
 import 'package:flutter/widgets.dart';
 
+=======
+import 'home.dart';
+>>>>>>> 2ebb4c681d72bcb3ec43fe1db8c9dd85f2570cb9
 
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key? key}) : super(key: key);
@@ -253,45 +256,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/back.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        Container(),
         _buildHabitList(),
       ]),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        fixedColor: Color.fromARGB(136, 0, 0, 0),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Habits',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note),
-            label: 'Log',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Stats',
-          ),
-        ],
-        currentIndex: 1,
-        onTap: _onItemTapped,
-      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: _addNewHabit,
@@ -302,5 +269,3 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
     );
   }
 }
-
-

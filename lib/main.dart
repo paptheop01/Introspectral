@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
 import 'package:introspectral/habit.dart';
+import 'package:introspectral/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,97 +23,108 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Introspectral',
       theme: ThemeData(
-        canvasColor: Color.fromARGB(255, 69, 139, 127),
+        canvasColor: Color.fromARGB(255, 69, 139, 127).withOpacity(0.3),
         primarySwatch: Colors.blueGrey,
       ),
-      home: const HomeScreenWidget(),
+      home: const MyHomePage(title: "Introspectral"),
     );
   }
 }
 
-class HomeScreenWidget extends StatefulWidget {
-  const HomeScreenWidget({Key? key}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
 
   @override
-  _HomeScreenWidgetState createState() => _HomeScreenWidgetState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _HomeScreenWidgetState extends State<HomeScreenWidget> {
-  void _gotohabits() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => HabitListScreenWidget()));
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+  final _pageController = PageController();
+  List<Widget> _pages = [];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => HabitListScreenWidget()));
-        break;
-      case 2:
-        break;
-      case 3:
-        break;
-      case 4:
-        break;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _pages = <Widget>[
+      HomeScreenWidget(),
+      HabitListScreenWidget(),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Stack(
-        children: <Widget>[
-          new Container(
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                image: new AssetImage("assets/images/back.png"),
-                fit: BoxFit.cover,
-              ),
+    return Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/back.png"),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1),
+              BlendMode.darken,
             ),
           ),
-          new Center(
-            child: new Text("Hello background"),
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        fixedColor: Color.fromARGB(136, 0, 0, 0),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+        ),
+        child: Scaffold(
+          body: PageView(
+            controller: _pageController,
+            children: _pages,
+            onPageChanged: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Habits',
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: _onItemTapped,
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.green, // SELECTED TAB COLOR
+            unselectedItemColor: const Color(0xCFFFFFFF),
+            backgroundColor: Colors.grey, // BACKGROUND COLOR
+            iconSize: 30,
+            selectedFontSize: 15,
+            unselectedFontSize: 15,
+            elevation: 12,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Habits',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.note),
+                label: 'Log',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today),
+                label: 'Calendar',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.show_chart),
+                label: 'Stats',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note),
-            label: 'Log',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Stats',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: _onItemTapped,
-      ),
-    );
+        ));
   }
 }
-
-
 
 class Habit {
   int? id;
@@ -137,9 +149,6 @@ class Habit {
         completed = habit['completed'],
         goal = habit['goal'];
 }
-
-
-
 
 class SQLservice {
   Future<Database> initDB() async {
@@ -188,8 +197,3 @@ class SQLservice {
     await db.delete('habits');
   }
 }
-
-
-
-
-
