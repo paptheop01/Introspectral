@@ -50,7 +50,7 @@ class _ViewEditHabitWidgetState extends State<ViewEditHabitWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextField(
+                child: AgeFormField(
                   minLines: 2,
                   maxLines: 10,
                   decoration: const InputDecoration(
