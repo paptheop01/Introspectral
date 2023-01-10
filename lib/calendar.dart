@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +16,56 @@ class CalendarScreenWidget extends StatefulWidget {
 }
 
 class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
+  void _onDaySelected(DateTime day, List events) {
+    print('Selected day: $day');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.all(45),
+              child: Text(
+                'My Calendar',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 36,
+                ),
+              ),
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(0, 100),
+            child: TableCalendar(
+              focusedDay: DateTime(2023, 1, 10),
+              firstDay: DateTime(2023, 1, 10),
+              lastDay: DateTime(2023, 1, 10),
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarFormat: CalendarFormat.month,
+
+              headerStyle: HeaderStyle(
+                titleCentered: true,
+                formatButtonDecoration: BoxDecoration(
+                  color: Colors.deepOrange[400],
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                formatButtonTextStyle: TextStyle(color: Colors.white),
+                formatButtonShowsNext: false,
+              ),
+              //  onDaySelected: _onDaySelected,
+            ),
+          ),
+        ],
+      ),
+    );
+    /*
   late SQLservice sqLiteservice;
   int density = 0;
   List<Habit> _habits = <Habit>[];
@@ -90,6 +142,6 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
         tooltip: 'Add Habit',
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-    );
+    );*/
   }
 }

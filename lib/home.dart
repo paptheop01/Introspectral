@@ -85,11 +85,27 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       body: Stack(
         children: <Widget>[
           Positioned(
-            top: 100,
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.all(45),
+              child: Text(
+                'Welcome Back!',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 36,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 150,
             left: 20,
             child: Container(
               width: 190,
-              height: 250,
+              height: 450,
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -100,9 +116,10 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             ),
           ),
           Container(
-            height: 350,
+            width: 400,
+            height: 400,
             child: Transform.translate(
-              offset: Offset(0, 100),
+              offset: Offset(0, 150),
               child: _buildHabitList(),
             ),
           ),
