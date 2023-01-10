@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
 import 'main.dart';
-<<<<<<< HEAD
+
 import 'package:flutter/widgets.dart';
 
-=======
+
 import 'home.dart';
->>>>>>> 2ebb4c681d72bcb3ec43fe1db8c9dd85f2570cb9
+
 
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key? key}) : super(key: key);
@@ -112,7 +112,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                   )),
               Container(
                   height: 50,
-                  width: 400*(_habits[index].completed/_habits[index].goal),
+                  width: 395.4*(_habits[index].completed/_habits[index].goal),
                   decoration: BoxDecoration(
                     color: Color(0xFF00FF19),
                     borderRadius: BorderRadius.circular(25),
