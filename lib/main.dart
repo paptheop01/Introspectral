@@ -3,11 +3,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
 import 'package:introspectral/habit.dart';
 import 'package:introspectral/home.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:introspectral/calendar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pages = <Widget>[
       HomeScreenWidget(),
       HabitListScreenWidget(),
+      CalendarScreenWidget(),
     ];
   }
 
@@ -150,17 +156,68 @@ class Habit {
         goal = habit['goal'];
 }
 
+class Log {
+  int? id;
+  String text;
+  int emotionID;
+  DateTime dateTime;
+  double? latitude;
+  double? longitude;
+  File? photo;
+  Uint8List? voiceRecording;
+
+  Log(
+      {this.id,
+      required this.text,
+      required this.emotionID,
+      required this.dateTime,
+      this.latitude,
+      this.longitude,
+      this.photo,
+      this.voiceRecording});
+
+  Map<String, dynamic> toMap() {
+    final record = {
+      'text': text,
+      'emotionID': emotionID,
+      'dateTime': dateTime,
+      'latitude': latitude,
+      'longitude': longitude,
+      'photo': photo,
+      'voiceRecording': voiceRecording
+    };
+
+    return record;
+  }
+
+  Log.fromMap(Map<String, dynamic> log)
+      : id = log['id'],
+        text = log['text'],
+        emotionID = log['emotionID'],
+        dateTime = log['dateTime'],
+        latitude = log['latitude'],
+        longitude = log['longitude'],
+        photo = log['photo'],
+        voiceRecording = log['voiceRecording'];
+}
+
 class SQLservice {
   Future<Database> initDB() async {
     return openDatabase(
       p.join(await getDatabasesPath(), 'habits.db'),
       onCreate: (db, version) {
-        return db.execute(
-            'CREATE TABLE habits(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed INTEGER,goal INTEGER)');
+        // Create tables for habits and logs
+        db.execute(
+            'CREATE TABLE habits(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed INTEGER,goal INTEGER);');
+        db.execute(
+            'CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, emotionID INTEGER, dateTime TEXT, latitude REAL, longitude REAL, photo BLOB, voiceRecording BLOB);');
+        return db;
       },
       version: 1,
     );
   }
+
+  // TODO: Create CRUD methods for logs
 
   Future<List<Habit>> getHabits() async {
     final db = await initDB();
