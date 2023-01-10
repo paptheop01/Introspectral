@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
 import 'main.dart';
+import 'package:flutter/widgets.dart';
+
 
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key? key}) : super(key: key);
@@ -50,24 +52,49 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         textDEc = TextDecoration.none;
 
         return Stack(children: [
-          /*Center(child:Container(
+          Center(child:Container(
               height: 50,
+              width: 400,
                 decoration: BoxDecoration(
 
                   borderRadius:BorderRadius.circular(25) ,
                   color: Colors.red,
                 ),
-              )),*/
+                padding: EdgeInsets.symmetric(vertical: 15,horizontal: 45),
+                child: Row(
+                  children: [Icon(Icons.delete,size: 20,color: Colors.black,),
+                Text('Delete')
+                ])
+                
+              )),
           Dismissible(
-            background: Container(
+            /*background: Container(
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 color: Colors.blue,
               ),
-            ),
+            ),*/
             key: UniqueKey(),
+
             direction: DismissDirection.startToEnd,
+            dismissThresholds: {DismissDirection.startToEnd:0.4},
+            confirmDismiss:(DismissDirection direction) async {
+                  return await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Delete Confirmation"),
+                        content: const Text("Are you sure you want to delete this item?"),
+                        actions: <Widget>[
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text("Delete")
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text("Cancel"),
+                          ),]);});},
             onDismissed: (direction) {
               // Remove the item from the list
 
@@ -77,12 +104,12 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
               Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Color(0x3300FF19),
+                    color: Color(0xFF9CBF9C),
                     borderRadius: BorderRadius.circular(25),
                   )),
               Container(
                   height: 50,
-                  width: 200,
+                  width: 400*(_habits[index].completed/_habits[index].goal),
                   decoration: BoxDecoration(
                     color: Color(0xFF00FF19),
                     borderRadius: BorderRadius.circular(25),
@@ -95,17 +122,56 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                   height: 50,
                   padding:
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
-                  child: Text(
-                    _habits[index].title,
-                    style: TextStyle(
+                  child:  Row(
+                    
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(_habits[index].title,
+            style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                    ),
+            Spacer(),
+            
+                 ElevatedButton(
+                  onPressed: () { if(_habits[index].completed>0){
+                    _habits[index].completed = _habits[index].completed -1 ;
+                    sqLiteservice.updateComplete(_habits[index]);
+              setState(() {
+                
+              });}},
+                  child: Icon(Icons.remove,color: Colors.black,size: 20,),
+                  style: ElevatedButton.styleFrom(shape: CircleBorder(),elevation: 0,padding:  EdgeInsets.zero),
+                  
+                  
+                ),
+                Text(_habits[index].completed.toString()+'/'+_habits[index].goal.toString(),style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
                     ),
-                  )),
-            ]),
-          )
-        ]);
-      },
+                    ),
+                ElevatedButton(
+                  onPressed: () {
+                    if(_habits[index].completed<_habits[index].goal){
+                  _habits[index].completed = _habits[index].completed +1 ;
+              sqLiteservice.updateComplete(_habits[index]);
+              setState(() {
+                
+              });}},
+                  child: Icon(Icons.add,color: Colors.black,size: 20,),
+                  style: ElevatedButton.styleFrom(shape: CircleBorder(),elevation: 0,padding:  EdgeInsets.zero),
+                  
+                  
+                ),
+              ],
+            
+            
+                  )
+        
+      ),]
+    ),)
+            ],);},
 
       /*return ListTile(
           
