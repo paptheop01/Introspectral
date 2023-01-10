@@ -50,13 +50,22 @@ class _ViewEditHabitWidgetState extends State<ViewEditHabitWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: AgeFormField(
-                  minLines: 2,
-                  maxLines: 10,
+                child: TextFormField(
+                  minLines: 1,
+                  maxLines: 2,
                   decoration: const InputDecoration(
                       hintText: 'Goal',
                       border: OutlineInputBorder(borderSide: BorderSide())),
                   controller: _descriptionController,
+                  validator: (value) {
+                      if (value==null||value.isEmpty) {
+                          return 'Goal cannot be empty';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
                 ),
               ),
               Padding(
@@ -89,7 +98,7 @@ class _ViewEditHabitWidgetState extends State<ViewEditHabitWidget> {
                           if (_formKey.currentState!.validate()) {
                             final habit = Habit(
                                 title: _titleController.text,
-                                goal: 5, //int(_descriptionController.text) ,
+                                goal: int.parse(_descriptionController.text), //int(_descriptionController.text) ,
 
                                 completed: 0);
 
