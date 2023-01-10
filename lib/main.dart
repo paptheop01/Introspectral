@@ -219,6 +219,23 @@ class SQLservice {
 
   // TODO: Create CRUD methods for logs
 
+  Future<List<Log>> getLogs() async {
+    final db = await initDB();
+    final List<Map<String, Object?>> queryResult = await db.query('logs');
+    return queryResult.map((e) => Log.fromMap(e)).toList();
+  }
+
+  Future<int> addLog(Log log) async {
+    final db = await initDB();
+    return db.insert('logs', log.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> deleteLog(final id) async {
+    final db = await initDB();
+    await db.delete('logs', where: 'id=?', whereArgs: [id]);
+  }
+
   Future<List<Habit>> getHabits() async {
     final db = await initDB();
     final List<Map<String, Object?>> queryResult = await db.query('habits');
