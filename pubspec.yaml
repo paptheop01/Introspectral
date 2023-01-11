@@ -33,18 +33,23 @@ dependencies:
   flutter:
     sdk: flutter
 
-  shared_preferences: 
+  
+
+  shared_preferences: ^2.0.15 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  sqflite:
-  path:
+  cupertino_icons: ^1.0.5
+  sqflite: ^2.2.2
+  path: ^1.8.2
   geolocator: ^9.0.2
-  json_serializable: ^4.0.0
-  flutter_calendar_carousel: ^2.4.0
-  table_calendar:
+  json_serializable: ^6.5.4
+  flutter_calendar_carousel: ^2.4.1
+  table_calendar: ^3.0.8
+  image_picker: ^0.8.6
+  record: ^4.4.4
+  permission_handler: ^10.2.0
 dev_dependencies:
-  build_runner: 
+  build_runner: ^2.3.3 
 
   flutter_test:
     sdk: flutter
@@ -54,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

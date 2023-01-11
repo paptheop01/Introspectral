@@ -183,7 +183,7 @@ class Log {
     final record = {
       'text': text,
       'emotionID': emotionID,
-      'dateTime': dateTime,
+      'dateTime': dateTime.toIso8601String(),
       'latitude': latitude,
       'longitude': longitude,
       'photo': photo,
@@ -197,7 +197,7 @@ class Log {
       : id = log['id'],
         text = log['text'],
         emotionID = log['emotionID'],
-        dateTime = log['dateTime'],
+        dateTime = DateTime.parse(log['dateTime']),
         latitude = log['latitude'],
         longitude = log['longitude'],
         photo = log['photo'],

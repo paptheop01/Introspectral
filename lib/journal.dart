@@ -39,7 +39,7 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
       itemBuilder: (context, index) {
         return Card(
           child: ListTile(
-            title: Text('Log $index'),
+            title: Text(_logs[index].text),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () => _deleteLog(index),
@@ -47,6 +47,7 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
           ),
         );
       },
+      itemCount: _logs.length,
     );
   }
 

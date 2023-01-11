@@ -1,6 +1,11 @@
 import 'main.dart';
 import 'journal.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
 
 class AddLogWidget extends StatefulWidget {
   const AddLogWidget({Key? key}) : super(key: key);
@@ -24,7 +29,7 @@ class _AddLogWidgetState extends State<AddLogWidget> {
     _addLogPages = <Widget>[
       EmotionsPage(),
       TextPage(),
-      //MediaPage(),
+      MediaPage(),
     ];
   }
 
@@ -332,21 +337,22 @@ class TextPage extends StatefulWidget {
 }
 
 class _TextPageState extends State<TextPage> {
-  final _TextformKey = GlobalKey<FormState>();
+  static final _textformKey = GlobalKey<FormState>();
+  static final _textController = TextEditingController();
 
   // Show a text field where the user can write their thoughts
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        key: _TextformKey,
+        key: _textformKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               'Write your thoughts here:',
             ),
-            TextField(
+            TextFormField(
               maxLines: 10,
               maxLength: 250,
               decoration: InputDecoration(
@@ -356,10 +362,87 @@ class _TextPageState extends State<TextPage> {
                 fillColor: Colors.white12,
                 focusColor: Color.fromARGB(255, 92, 197, 31),
               ),
+              controller: _textController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Text cannot by empty';
+                }
+                return null;
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class MediaPage extends StatefulWidget {
+  @override
+  _MediaPageState createState() => _MediaPageState();
+}
+
+class _MediaPageState extends State<MediaPage> {
+  XFile? _image;
+  final ImagePicker _picker = ImagePicker();
+  Record? _recorder;
+  bool _isRecording = false;
+  File? _recordingFile;
+
+  void _takePhoto() async {
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  void _startRecording() async {
+    _recorder = Record();
+    await _recorder?.start();
+    setState(() {
+      _isRecording = true;
+    });
+  }
+
+  void _stopRecording() async {
+    var path = await _recorder?.stop();
+    _recordingFile = File(path!);
+    setState(() {
+      _isRecording = false;
+    });
+  }
+
+  void _submit() {
+    // do something with the _image and _recording
+    if (_TextPageState._textformKey.currentState!.validate()) {
+      final log = Log(
+          text: _TextPageState._textController.text,
+          emotionID: 1, //int(_descriptionController.text) ,
+          dateTime: DateTime.now());
+
+      Navigator.pop(context, log);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        if (_recordingFile != null)
+          Text("Audio recorded: ${_recordingFile?.path}"),
+        ElevatedButton(
+          onPressed: _isRecording ? null : _startRecording,
+          child: Text(_isRecording ? "Recording..." : "Start Recording"),
+        ),
+        ElevatedButton(
+          onPressed: _isRecording ? _stopRecording : null,
+          child: Text("Stop Recording"),
+        ),
+        ElevatedButton(
+          onPressed: _submit,
+          child: Text("Submit"),
+        ),
+      ],
     );
   }
 }
