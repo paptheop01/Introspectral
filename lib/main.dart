@@ -166,8 +166,8 @@ class Log {
   DateTime dateTime;
   double? latitude;
   double? longitude;
-  File? photo;
-  Uint8List? voiceRecording;
+  String? photo;
+  String? voiceRecording;
 
   Log(
       {this.id,
@@ -213,7 +213,7 @@ class SQLservice {
         db.execute(
             'CREATE TABLE habits(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, completed INTEGER,goal INTEGER);');
         db.execute(
-            'CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, emotionID INTEGER, dateTime TEXT, latitude REAL, longitude REAL, photo BLOB, voiceRecording BLOB);');
+            'CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, emotionID INTEGER, dateTime TEXT, latitude REAL, longitude REAL, photo TEXT, voiceRecording TEXT);');
 
         db.rawInsert('''INSERT INTO habits (id, title, completed, goal)
                         VALUES (0, 'water', 0, 8)''');

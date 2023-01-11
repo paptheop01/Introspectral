@@ -1,6 +1,7 @@
 import 'main.dart';
 import 'journal.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -385,9 +386,14 @@ class MediaPage extends StatefulWidget {
 class _MediaPageState extends State<MediaPage> {
   XFile? _image;
   final ImagePicker _picker = ImagePicker();
-  Record? _recorder;
+  Record? _recorder = Record();
   bool _isRecording = false;
   File? _recordingFile;
+
+  _initRec() async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+  }
 
   void _takePhoto() async {
     final image = await _picker.pickImage(source: ImageSource.camera);
@@ -396,18 +402,35 @@ class _MediaPageState extends State<MediaPage> {
     });
   }
 
-  void _startRecording() async {
+  Future<String> _startRecording() async {
+    //_initRec();
     _recorder = Record();
-    await _recorder?.start();
-    setState(() {
-      _isRecording = true;
-    });
+    final permission = await Permission.microphone.status;
+    await Permission.storage.request();
+    if (Permission.microphone.status != PermissionStatus.granted)
+      await Permission.microphone.request();
+    final permissionStorage = await Permission.storage.status;
+    if (permission == PermissionStatus.granted &&
+        permissionStorage == PermissionStatus.granted) {
+      Directory appDocDirectory = (await getExternalStorageDirectory())!;
+      _recorder = Record();
+      String path = appDocDirectory.path +
+          "/${DateTime.now().millisecondsSinceEpoch}.aac";
+      await _recorder!.start(path: path);
+      setState(() {
+        _isRecording = true;
+      });
+      return path;
+    } else {
+      await Permission.microphone.request();
+      return "";
+    }
   }
 
-  void _stopRecording() async {
-    var path = await _recorder?.stop();
-    _recordingFile = File(path!);
+  Future<void> _stopRecording() async {
+    String? path = await _recorder!.stop();
     setState(() {
+      _recordingFile = File(path!);
       _isRecording = false;
     });
   }
@@ -418,7 +441,8 @@ class _MediaPageState extends State<MediaPage> {
       final log = Log(
           text: _TextPageState._textController.text,
           emotionID: 1, //int(_descriptionController.text) ,
-          dateTime: DateTime.now());
+          dateTime: DateTime.now(),
+          voiceRecording: _recordingFile?.path);
       _TextPageState._textController.clear();
       Navigator.pop(context, log);
     }

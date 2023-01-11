@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/journaladd.dart';
+import 'package:intl/intl.dart';
 import 'main.dart';
 
 import 'package:flutter/widgets.dart';
@@ -40,6 +41,9 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
         return Card(
           child: ListTile(
             title: Text(_logs[index].text),
+            subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
+                .format(_logs[index].dateTime)
+                .toString()),
             trailing: IconButton(
               icon: Icon(Icons.delete),
               onPressed: () => _deleteLog(index),
