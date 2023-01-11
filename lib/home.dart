@@ -17,21 +17,10 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late SQLservice sqLiteservice;
   int density = 0;
   List<Habit> _habits = <Habit>[];
+
   @override
-  void _addNewHabit() async {
-    Habit? newHabit = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));
-    if (newHabit != null) {
-      final newId = await sqLiteservice.addHabit(newHabit);
-      newHabit.id = newId;
-
-      _habits.add(newHabit);
-      setState(() {});
-    }
-  }
-
   void initState() {
-    super.initState();
+    // super.initState();
     sqLiteservice = SQLservice();
     sqLiteservice.initDB().whenComplete(() async {
       final habits = await sqLiteservice.getHabits();
@@ -41,7 +30,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     });
   }
 
-  int watercups = 0;
+  //double watercups =
 
   Widget _buildHabitList() {
     return ListView.separated(
@@ -55,21 +44,25 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         toolTip = 'Mark as completed';
         textDEc = TextDecoration.none;
 
-        return ListTile(
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 1.0, vertical: -4.0),
-          leading: CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 30.0,
-            child: Icon(
-              Icons.favorite,
-              color: Colors.red,
-              size: 35.0,
+        return Container(
+          //height: 35.0,
+          width: 3.0,
+          child: ListTile(
+            dense: true,
+            visualDensity: VisualDensity(horizontal: 1.0, vertical: -4.0),
+            leading: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 30.0,
+              child: Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 35.0,
+              ),
             ),
-          ),
-          title: Text(
-            _habits[index].title,
-            style: TextStyle(decoration: textDEc),
+            title: Text(
+              _habits[index].title,
+              style: TextStyle(decoration: textDEc),
+            ),
           ),
         );
       },
@@ -105,7 +98,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             left: 20,
             child: Container(
               width: 190,
-              height: 450,
+              height: 200,
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -138,9 +131,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 child: Icon(Icons.add),
                 onPressed: () {
                   // watercups = await loadwatercups();
-                  if (watercups < 8) {
-                    watercups += 1;
-                    // persistwatercups(watercups);
+                  if (_habits[0].completed < 8) {
+                    _habits[0].completed += 1;
+                    sqLiteservice.updateComplete(_habits[0]);
                     setState(() {});
                   }
                 },
@@ -158,8 +151,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               child: FloatingActionButton(
                 child: Icon(Icons.remove),
                 onPressed: () {
-                  if (watercups > 0) {
-                    watercups -= 1;
+                  if (_habits[0].completed > 0) {
+                    _habits[0].completed -= 1;
+                    sqLiteservice.updateComplete(_habits[0]);
                     setState(() {});
                   }
                 },
@@ -177,8 +171,22 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               child: CircularProgressIndicator(
                 backgroundColor: Color.fromARGB(0, 158, 158, 158),
                 valueColor: AlwaysStoppedAnimation(Color(0xFF00FF19)),
-                value: watercups / 8,
+                //value: (_habits[0].completed) * 1.0 / 8,
+                value: 0,
                 strokeWidth: 5.0,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 292,
+            right: 74,
+            child: Text(
+              //_habits[0].completed.toString() +
+              // '/' + _habits[0].goal.toString(),
+              'dedoulevei',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 13,
               ),
             ),
           ),
