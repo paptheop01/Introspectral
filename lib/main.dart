@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:introspectral/journal.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
 import 'package:introspectral/habit.dart';
 import 'package:introspectral/home.dart';
+import 'package:introspectral/journal.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:introspectral/calendar.dart';
 
@@ -67,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pages = <Widget>[
       HomeScreenWidget(),
       HabitListScreenWidget(),
+      JournalScreenWidget(),
       CalendarScreenWidget(),
     ];
   }

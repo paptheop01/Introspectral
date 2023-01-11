@@ -43,9 +43,7 @@ dependencies:
   json_serializable: ^4.0.0
   flutter_calendar_carousel: ^2.4.0
   table_calendar:
-  
-  dev_dependencies:
-
+dev_dependencies:
   build_runner: 
 
   flutter_test:
@@ -98,5 +96,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-
