@@ -419,7 +419,7 @@ class _MediaPageState extends State<MediaPage> {
           text: _TextPageState._textController.text,
           emotionID: 1, //int(_descriptionController.text) ,
           dateTime: DateTime.now());
-
+      _TextPageState._textController.clear();
       Navigator.pop(context, log);
     }
   }
