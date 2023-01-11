@@ -4,9 +4,7 @@ import 'main.dart';
 
 import 'package:flutter/widgets.dart';
 
-
 import 'home.dart';
-
 
 class HabitListScreenWidget extends StatefulWidget {
   const HabitListScreenWidget({Key? key}) : super(key: key);
@@ -43,140 +41,189 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   }
 
   Widget _buildHabitList() {
-    return ListView.separated(
-      padding: const EdgeInsets.all(8.0),
-      itemBuilder: (context, index) {
-        IconData iconData;
-        String toolTip;
-        TextDecoration textDEc;
-
-        iconData = Icons.check_box_outline_blank_outlined;
-        toolTip = 'Mark as completed';
-        textDEc = TextDecoration.none;
-
-        return Stack(children: [
-          Center(child:Container(
-              height: 50,
-              width: 400,
-                decoration: BoxDecoration(
-
-                  borderRadius:BorderRadius.circular(25) ,
-                  color: Colors.red,
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.all(45),
+              child: Text(
+                'Habits',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 36,
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15,horizontal: 45),
-                child: Row(
-                  children: [Icon(Icons.delete,size: 20,color: Colors.black,),
-                Text('Delete')
-                ])
-                
-              )),
-          Dismissible(
-            /*background: Container(
+              ),
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(0, 140),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(8.0),
+              itemBuilder: (context, index) {
+                IconData iconData;
+                String toolTip;
+                TextDecoration textDEc;
+
+                iconData = Icons.check_box_outline_blank_outlined;
+                toolTip = 'Mark as completed';
+                textDEc = TextDecoration.none;
+
+                return Stack(
+                  children: [
+                    Center(
+                        child: Container(
+                            height: 50,
+                            width: 400,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: Colors.red,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 45),
+                            child: Row(children: [
+                              Icon(
+                                Icons.delete,
+                                size: 20,
+                                color: Colors.black,
+                              ),
+                              Text('Delete')
+                            ]))),
+                    Dismissible(
+                      /*background: Container(
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 color: Colors.blue,
               ),
             ),*/
-            key: UniqueKey(),
+                      key: UniqueKey(),
+                      direction: DismissDirection.startToEnd,
+                      dismissThresholds: {DismissDirection.startToEnd: 0.4},
+                      confirmDismiss: (DismissDirection direction) async {
+                        return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: const Text("Delete Confirmation"),
+                                  content: const Text(
+                                      "Are you sure you want to delete this item?"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text("Delete")),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text("Cancel"),
+                                    ),
+                                  ]);
+                            });
+                      },
+                      onDismissed: (direction) {
+                        // Remove the item from the list
 
-            direction: DismissDirection.startToEnd,
-            dismissThresholds: {DismissDirection.startToEnd:0.4},
-            confirmDismiss:(DismissDirection direction) async {
-                  return await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Delete Confirmation"),
-                        content: const Text("Are you sure you want to delete this item?"),
-                        actions: <Widget>[
-                          TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text("Delete")
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text("Cancel"),
-                          ),]);});},
-            onDismissed: (direction) {
-              // Remove the item from the list
+                        _deleteHabit(index);
+                      },
+                      child: Stack(children: [
+                        Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF9CBF9C),
+                              borderRadius: BorderRadius.circular(25),
+                            )),
+                        Container(
+                            height: 50,
+                            width: 400 *
+                                (_habits[index].completed /
+                                    _habits[index].goal),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF00FF19),
+                              borderRadius: BorderRadius.circular(25),
+                            )),
+                        Container(
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            height: 50,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 25.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  _habits[index].title,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_habits[index].completed > 0) {
+                                      _habits[index].completed =
+                                          _habits[index].completed - 1;
+                                      sqLiteservice
+                                          .updateComplete(_habits[index]);
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      elevation: 0,
+                                      padding: EdgeInsets.zero),
+                                ),
+                                Text(
+                                  _habits[index].completed.toString() +
+                                      '/' +
+                                      _habits[index].goal.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_habits[index].completed <
+                                        _habits[index].goal) {
+                                      _habits[index].completed =
+                                          _habits[index].completed + 1;
+                                      sqLiteservice
+                                          .updateComplete(_habits[index]);
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      elevation: 0,
+                                      padding: EdgeInsets.zero),
+                                ),
+                              ],
+                            )),
+                      ]),
+                    )
+                  ],
+                );
+              },
 
-              _deleteHabit(index);
-            },
-            child: Stack(children: [
-              Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF9CBF9C),
-                    borderRadius: BorderRadius.circular(25),
-                  )),
-              Container(
-                  height: 50,
-                  width: 400*(_habits[index].completed/_habits[index].goal),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF00FF19),
-                    borderRadius: BorderRadius.circular(25),
-                  )),
-              Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  height: 50,
-                  padding:
-                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
-                  child:  Row(
-                    
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(_habits[index].title,
-            style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                    ),
-                    ),
-            Spacer(),
-            
-                 ElevatedButton(
-                  onPressed: () { if(_habits[index].completed>0){
-                    _habits[index].completed = _habits[index].completed -1 ;
-                    sqLiteservice.updateComplete(_habits[index]);
-              setState(() {
-                
-              });}},
-                  child: Icon(Icons.remove,color: Colors.black,size: 20,),
-                  style: ElevatedButton.styleFrom(shape: CircleBorder(),elevation: 0,padding:  EdgeInsets.zero),
-                  
-                  
-                ),
-                Text(_habits[index].completed.toString()+'/'+_habits[index].goal.toString(),style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                    ),
-                ElevatedButton(
-                  onPressed: () {
-                    if(_habits[index].completed<_habits[index].goal){
-                  _habits[index].completed = _habits[index].completed +1 ;
-              sqLiteservice.updateComplete(_habits[index]);
-              setState(() {
-                
-              });}},
-                  child: Icon(Icons.add,color: Colors.black,size: 20,),
-                  style: ElevatedButton.styleFrom(shape: CircleBorder(),elevation: 0,padding:  EdgeInsets.zero),
-                  
-                  
-                ),
-              ],
-            
-            
-                  )
-        
-      ),]
-    ),)
-            ],);},
-
-      /*return ListTile(
+              /*return ListTile(
           
 
           leading: IconButton(
@@ -203,8 +250,12 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         
         );},
         */
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: _habits.length,
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: _habits.length,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

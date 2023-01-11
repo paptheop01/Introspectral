@@ -7,6 +7,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:introspectral/main.dart';
 import 'package:introspectral/habit.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:introspectral/utils.dart';
 
 class CalendarScreenWidget extends StatefulWidget {
   const CalendarScreenWidget({Key? key}) : super(key: key);
@@ -16,9 +17,9 @@ class CalendarScreenWidget extends StatefulWidget {
 }
 
 class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
-  void _onDaySelected(DateTime day, List events) {
-    print('Selected day: $day');
-  }
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
 
   @override
   Widget build(BuildContext context) {
@@ -41,107 +42,64 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
               ),
             ),
           ),
-          Transform.translate(
-            offset: Offset(0, 100),
-            child: TableCalendar(
-              focusedDay: DateTime(2023, 1, 10),
-              firstDay: DateTime(2023, 1, 10),
-              lastDay: DateTime(2023, 1, 10),
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              calendarFormat: CalendarFormat.month,
-
-              headerStyle: HeaderStyle(
-                titleCentered: true,
-                formatButtonDecoration: BoxDecoration(
-                  color: Colors.deepOrange[400],
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                formatButtonTextStyle: TextStyle(color: Colors.white),
-                formatButtonShowsNext: false,
+          Positioned(
+            top: 120,
+            left: 10,
+            child: Container(
+              width: 372,
+              height: 380,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 216, 232, 218),
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
               ),
-              //  onDaySelected: _onDaySelected,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              ),
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(0, 120),
+            child: TableCalendar(
+              firstDay: kFirstDay,
+              lastDay: kLastDay,
+              focusedDay: _focusedDay,
+              calendarFormat: CalendarFormat.month,
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  // Call `setState()` when updating the selected day
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                }
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  // Call `setState()` when updating calendar format
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                // No need to call `setState()` here
+                _focusedDay = focusedDay;
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 120,
+            left: 130,
+            child: ElevatedButton(
+              child: Text("See that day's log"),
+              onPressed: () {},
             ),
           ),
         ],
       ),
     );
-    /*
-  late SQLservice sqLiteservice;
-  int density = 0;
-  List<Habit> _habits = <Habit>[];
-  @override
-  void _addNewHabit() async {
-    Habit? newHabit = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));
-    if (newHabit != null) {
-      final newId = await sqLiteservice.addHabit(newHabit);
-      newHabit.id = newId;
-
-      _habits.add(newHabit);
-      setState(() {});
-    }
-  }
-
-  void initState() {
-    super.initState();
-    sqLiteservice = SQLservice();
-    sqLiteservice.initDB().whenComplete(() async {
-      final habits = await sqLiteservice.getHabits();
-      setState(() {
-        _habits = habits;
-      });
-    });
-  }
-
-  Widget _buildHabitList() {
-    return ListView.separated(
-      padding: const EdgeInsets.all(8.0),
-      itemBuilder: (context, index) {
-        IconData iconData;
-        String toolTip;
-        TextDecoration textDEc;
-
-        iconData = Icons.check_box_outline_blank_outlined;
-        toolTip = 'Mark as completed';
-        textDEc = TextDecoration.none;
-
-        return ListTile(
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 1.0, vertical: -4.0),
-          leading: IconButton(
-            icon: Icon(iconData),
-            onPressed: () {
-              _habits[index].completed = _habits[index].completed + 1;
-              sqLiteservice.updateComplete(_habits[index]);
-              setState(() {});
-            },
-            tooltip: toolTip,
-          ),
-          title: Text(
-            _habits[index].title,
-            style: TextStyle(decoration: textDEc),
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: _habits.length,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: <Widget>[
-        Container(),
-        _buildHabitList(),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _addNewHabit,
-        backgroundColor: Colors.teal,
-        tooltip: 'Add Habit',
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-    );*/
   }
 }
