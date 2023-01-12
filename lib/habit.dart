@@ -16,8 +16,7 @@ class HabitListScreenWidget extends StatefulWidget {
 class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   late SQLservice sqLiteservice;
   List<Habit> _habits = <Habit>[];
-  double _sum = 0.0;
-
+   double _sum = 0.0;
   void _addNewHabit() async {
     Habit? newHabit = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));
