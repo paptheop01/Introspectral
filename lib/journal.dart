@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/journaladd.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
+
+import 'dart:io';
+
 import 'main.dart';
 
 import 'package:flutter/widgets.dart';
@@ -39,17 +45,31 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
     return ListView.builder(
       itemBuilder: (context, index) {
         return Card(
-          child: ListTile(
-            title: Text(_logs[index].text),
-            subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
-                .format(_logs[index].dateTime)
-                .toString()),
-            trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => _deleteLog(index),
+            child: Stack(
+          children: [
+            ListTile(
+              title: Text(_logs[index].text),
+              subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
+                  .format(_logs[index].dateTime)
+                  .toString()),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => _deleteLog(index),
+              ),
             ),
-          ),
-        );
+            _logs[index].voiceRecording == null
+                ? Container()
+                : ElevatedButton(
+                    onPressed: () async {
+                      if (_logs[index].voiceRecording != null) {
+                        await AudioPlayer().play(
+                            DeviceFileSource(_logs[index].voiceRecording!));
+                      }
+                    },
+                    child: Text('Play'),
+                  ),
+          ],
+        ));
       },
       itemCount: _logs.length,
     );
