@@ -17,17 +17,29 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late SQLservice sqLiteservice;
   int density = 0;
   List<Habit> _habits = <Habit>[];
+  List<Habit> _habits4 = <Habit>[];
 
   @override
   void initState() {
-    // super.initState();
+    super.initState();
     sqLiteservice = SQLservice();
     sqLiteservice.initDB().whenComplete(() async {
       final habits = await sqLiteservice.getHabits();
+      final habits4 = await sqLiteservice.getHabits4top();
+
       setState(() {
         _habits = habits;
+        _habits4 = habits4;
       });
     });
+  }
+
+  void _seeHabits() async {
+    Habit? habit = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => HabitListScreenWidget()));
+    if (habit != null) {
+      setState(() {});
+    }
   }
 
   //double watercups =
@@ -60,14 +72,14 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               ),
             ),
             title: Text(
-              _habits[index].title,
+              _habits4[index].title,
               style: TextStyle(decoration: textDEc),
             ),
           ),
         );
       },
       separatorBuilder: (context, index) => const Divider(),
-      itemCount: _habits.length,
+      itemCount: _habits4.length,
     );
   }
 
@@ -98,9 +110,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             left: 20,
             child: Container(
               width: 190,
-              height: 200,
+              height: 250,
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color.fromARGB(255, 215, 255, 241),
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
               ),
               child: ClipRRect(
@@ -114,6 +126,20 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             child: Transform.translate(
               offset: Offset(0, 150),
               child: _buildHabitList(),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 60,
+            child: ElevatedButton(
+              child: Text("See all habits"),
+              onPressed: () {
+                //  Navigator.push(
+                // context,
+                // MaterialPageRoute(
+                //  builder: (context) => CalendarScreenWidget()),
+                // );
+              },
             ),
           ),
           Positioned(
@@ -171,7 +197,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               child: CircularProgressIndicator(
                 backgroundColor: Color.fromARGB(0, 158, 158, 158),
                 valueColor: AlwaysStoppedAnimation(Color(0xFF00FF19)),
-                value:_habits.isEmpty?0: (_habits[0].completed) * 1.0 / 8,
+                value: _habits.isEmpty ? 0 : (_habits[0].completed) * 1.0 / 8,
                 //value: 0,
                 strokeWidth: 5.0,
               ),
@@ -181,9 +207,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             top: 292,
             right: 85,
             child: Text(
-              (_habits.isEmpty?0:_habits[0].completed).toString() +
-               '/' +(_habits.isEmpty?8:_habits[0].goal).toString(),
-              
+              (_habits.isEmpty ? 0 : _habits[0].completed).toString() +
+                  '/' +
+                  (_habits.isEmpty ? 8 : _habits[0].goal).toString(),
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 13,

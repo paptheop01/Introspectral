@@ -267,6 +267,27 @@ class SQLservice {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<List<Habit>> getHabits4top() async {
+    final db = await initDB();
+    final List<Map<String, Object?>> queryResult =
+        await db.rawQuery("SELECT * FROM habits LIMIT 4 OFFSET 1");
+    return queryResult.map((e) => Habit.fromMap(e)).toList();
+  }
+
+  Future<int> sumhabits_total() async {
+    final db = await initDB();
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT SUM(goal) as total FROM habits');
+    return result[0]['total'];
+  }
+
+  Future<int> sumhabits_completed() async {
+    final db = await initDB();
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT SUM(completed) as total FROM habits');
+    return result[0]['total'];
+  }
+
   Future<void> deleteCompleted() async {
     final db = await initDB();
     await db.delete('habits', where: 'completed=1');

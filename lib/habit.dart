@@ -16,6 +16,8 @@ class HabitListScreenWidget extends StatefulWidget {
 class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   late SQLservice sqLiteservice;
   List<Habit> _habits = <Habit>[];
+  double _sum = 0.0;
+
   void _addNewHabit() async {
     Habit? newHabit = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));
@@ -34,8 +36,11 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
     sqLiteservice = SQLservice();
     sqLiteservice.initDB().whenComplete(() async {
       final habits = await sqLiteservice.getHabits();
+      final sumt = await sqLiteservice.sumhabits_total();
+      final sumc = await sqLiteservice.sumhabits_completed();
       setState(() {
         _habits = habits;
+        _sum = sumc * 100 / sumt;
       });
     });
   }
@@ -60,12 +65,40 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
               ),
             ),
           ),
+          Positioned(
+            key: UniqueKey(),
+            top: 30,
+            right: 30,
+            child: SizedBox(
+              key: UniqueKey(),
+              height: 75.0,
+              width: 75.0,
+              child: CircularProgressIndicator(
+                backgroundColor: Color.fromARGB(119, 150, 216, 159),
+                valueColor: AlwaysStoppedAnimation(Color(0xFF00FF19)),
+                // value: (_habits[0].completed) * 1.0 / 8,
+                value: _sum / 100,
+                strokeWidth: 8.0,
+              ),
+            ),
+          ),
+          Positioned(
+            key: UniqueKey(),
+            top: 55,
+            right: 48,
+            child: Text(
+              _sum.toStringAsFixed(1),
+              style: TextStyle(
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 22,
+              ),
+            ),
+          ),
           Transform.translate(
             offset: Offset(0, 140),
             child: ListView.separated(
               padding: const EdgeInsets.all(8.0),
               itemBuilder: (context, index) {
-                
                 if (index == 0) {
                   return Stack(children: [
                     Container(
@@ -182,59 +215,60 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:BorderRadius.circular(20.0)),
-                                    
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
                                   backgroundColor: Color(0xFF83B7B5),
-                                  title: const Text("Are you sure you want to delete this habit?",textAlign: TextAlign.center,),
+                                  title: const Text(
+                                    "Are you sure you want to delete this habit?",
+                                    textAlign: TextAlign.center,
+                                  ),
                                   content: Container(
-                                    padding: EdgeInsets.only(left: 15,right: 15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        InkWell(
-                                          onTap: () =>
-                                              Navigator.of(context).pop(false),
-                                          child:PhysicalModel(
-                                            elevation: 8.0,
-                                            borderRadius: BorderRadius.circular(25),
-                                            color: Color(0xFF5B68C0),
-                                            clipBehavior: Clip.antiAlias,
-                                            child: Container(
-                                              width: 66,
-                                              height: 32,
-                                              child: const Center(
-                                                child:  Text("No",
-                                                  style:TextStyle(color: Colors.white) ,
-                                                  )
-                                                )
-                                              )
-                                          )
-                                        ),
-                                        Spacer(),
-                                        InkWell( 
-                                          onTap: () =>
-                                              Navigator.of(context).pop(true),
-                                          child:PhysicalModel(
-                                            elevation: 8.0,
-                                            color: Color(0xFFD21313),
-                                            borderRadius: BorderRadius.circular(25),
-                                            child:  Container(
-                                              width: 66,
-                                              height: 32,
-                                              child:Center(
-                                                child:Text("Yes",
-                                                  style:TextStyle(color: Colors.white) 
-                                                  )
-                                                )
-                                              )
-                                            )
-                                          )
+                                      padding:
+                                          EdgeInsets.only(left: 15, right: 15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          InkWell(
+                                              onTap: () => Navigator.of(context)
+                                                  .pop(false),
+                                              child: PhysicalModel(
+                                                  elevation: 8.0,
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  color: Color(0xFF5B68C0),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Container(
+                                                      width: 66,
+                                                      height: 32,
+                                                      child: const Center(
+                                                          child: Text(
+                                                        "No",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ))))),
+                                          Spacer(),
+                                          InkWell(
+                                              onTap: () => Navigator.of(context)
+                                                  .pop(true),
+                                              child: PhysicalModel(
+                                                  elevation: 8.0,
+                                                  color: Color(0xFFD21313),
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  child: Container(
+                                                      width: 66,
+                                                      height: 32,
+                                                      child: Center(
+                                                          child: Text("Yes",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white))))))
                                         ],
-                                      )
-                                    ) ,
-                                   );
+                                      )),
+                                );
                               });
                         },
                         onDismissed: (direction) {
@@ -345,7 +379,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   }
 
   void _deleteHabit(int idx) async {
-    bool? delHabit =true; 
+    bool? delHabit = true;
     if (delHabit) {
       final habit = _habits.elementAt(idx);
       try {
