@@ -65,13 +65,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
             child: ListView.separated(
               padding: const EdgeInsets.all(8.0),
               itemBuilder: (context, index) {
-                IconData iconData;
-                String toolTip;
-                TextDecoration textDEc;
-
-                iconData = Icons.check_box_outline_blank_outlined;
-                toolTip = 'Mark as completed';
-                textDEc = TextDecoration.none;
+                
                 if (index == 0) {
                   return Stack(children: [
                     Container(
@@ -180,13 +174,6 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                 Text('Delete')
                               ]))),
                       Dismissible(
-                        /*background: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                color: Colors.blue,
-              ),
-            ),*/
                         key: UniqueKey(),
                         direction: DismissDirection.startToEnd,
                         dismissThresholds: {DismissDirection.startToEnd: 0.4},
@@ -195,20 +182,59 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                    title: const Text("Delete Confirmation"),
-                                    content: const Text(
-                                        "Are you sure you want to delete this item?"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          onPressed: () =>
+                                  
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:BorderRadius.circular(20.0)),
+                                    
+                                  backgroundColor: Color(0xFF83B7B5),
+                                  title: const Text("Are you sure you want to delete this habit?",textAlign: TextAlign.center,),
+                                  content: Container(
+                                    padding: EdgeInsets.only(left: 15,right: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        InkWell(
+                                          onTap: () =>
+                                              Navigator.of(context).pop(false),
+                                          child:PhysicalModel(
+                                            elevation: 8.0,
+                                            borderRadius: BorderRadius.circular(25),
+                                            color: Color(0xFF5B68C0),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Container(
+                                              width: 66,
+                                              height: 32,
+                                              child: const Center(
+                                                child:  Text("No",
+                                                  style:TextStyle(color: Colors.white) ,
+                                                  )
+                                                )
+                                              )
+                                          )
+                                        ),
+                                        Spacer(),
+                                        InkWell( 
+                                          onTap: () =>
                                               Navigator.of(context).pop(true),
-                                          child: const Text("Delete")),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        child: const Text("Cancel"),
-                                      ),
-                                    ]);
+                                          child:PhysicalModel(
+                                            elevation: 8.0,
+                                            color: Color(0xFFD21313),
+                                            borderRadius: BorderRadius.circular(25),
+                                            child:  Container(
+                                              width: 66,
+                                              height: 32,
+                                              child:Center(
+                                                child:Text("Yes",
+                                                  style:TextStyle(color: Colors.white) 
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          )
+                                        ],
+                                      )
+                                    ) ,
+                                   );
                               });
                         },
                         onDismissed: (direction) {
@@ -309,34 +335,6 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                   );
                 }
               },
-
-              /*return ListTile(
-          
-
-          leading: IconButton(
-            icon:  Icon(iconData),
-            onPressed: () {
-              _habits[index].completed = _habits[index].completed +1 ;
-              sqLiteservice.updateComplete(_habits[index]);
-              setState(() {
-                
-              });
-            },
-            tooltip: toolTip,),
-          title: Text(_habits[index].title,
-              style: TextStyle(decoration: textDEc),),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-                IconButton(onPressed: () {_deleteHabit(index);}, 
-                icon: Icon(Icons.delete),
-                tooltip: 'Delete Habit',),
-                
-            ],
-          ),
-        
-        );},
-        */
               separatorBuilder: (context, index) => const Divider(),
               itemCount: _habits.length,
             ),
@@ -347,18 +345,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   }
 
   void _deleteHabit(int idx) async {
-    bool? delHabit =
-        true; /* await showDialog<bool>(
-      context: context, 
-      builder: (BuildContext context) => AlertDialog(
-        content: const Text('Delete Habit?'),
-        actions: <Widget>[
-          TextButton(onPressed: () => Navigator.pop(context,false), 
-          child: const Text('cancel')),
-          TextButton(onPressed: () => Navigator.pop(context,true), 
-          child: const Text('delete')),
-        ],
-      ));*/
+    bool? delHabit =true; 
     if (delHabit) {
       final habit = _habits.elementAt(idx);
       try {

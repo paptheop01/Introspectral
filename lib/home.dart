@@ -171,19 +171,19 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               child: CircularProgressIndicator(
                 backgroundColor: Color.fromARGB(0, 158, 158, 158),
                 valueColor: AlwaysStoppedAnimation(Color(0xFF00FF19)),
-                //value: (_habits[0].completed) * 1.0 / 8,
-                value: 0,
+                value:_habits.isEmpty?0: (_habits[0].completed) * 1.0 / 8,
+                //value: 0,
                 strokeWidth: 5.0,
               ),
             ),
           ),
           Positioned(
             top: 292,
-            right: 74,
+            right: 85,
             child: Text(
-              //_habits[0].completed.toString() +
-              // '/' + _habits[0].goal.toString(),
-              'dedoulevei',
+              (_habits.isEmpty?0:_habits[0].completed).toString() +
+               '/' +(_habits.isEmpty?8:_habits[0].goal).toString(),
+              
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 13,
