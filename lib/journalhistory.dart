@@ -167,7 +167,7 @@ class _HistoryLogWidgetState extends State<HistoryLogWidget> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 202, 212, 211),
       appBar: AppBar(
-        title: Text('View your log from ' + widget.selectedDay.toString()),
+        title: const Text('View past log'),
       ),
       body: Stack(children: <Widget>[
         Container(),

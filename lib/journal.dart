@@ -28,6 +28,22 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: <Widget>[
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.all(45),
+            child: const Text(
+              'Today\'s Journal',
+              style: TextStyle(
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 36,
+              ),
+            ),
+          ),
+        ),
         Container(),
         _buildLogList(),
       ]),
@@ -93,73 +109,78 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
 
   Widget _buildLogList() {
     return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
       itemBuilder: (context, index) {
-        return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            color: _getCardColor(_logs[index].emotionID),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(_logs[index].text),
-                  subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
-                      .format(_logs[index].dateTime)
-                      .toString()),
-                  trailing: Image.asset(
-                    _getEmotionPath(_logs[index].emotionID),
-                    width: 42,
-                    height: 42,
+        if (DateFormat('yyyy-MM-dd').format(_logs[index].dateTime) ==
+            DateFormat('yyyy-MM-dd').format(DateTime.now())) {
+          return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              color: _getCardColor(_logs[index].emotionID),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text(_logs[index].text),
+                    subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
+                        .format(_logs[index].dateTime)
+                        .toString()),
+                    trailing: Image.asset(
+                      _getEmotionPath(_logs[index].emotionID),
+                      width: 42,
+                      height: 42,
+                    ),
                   ),
-                ),
-                _logs[index].voiceRecording == null
-                    ? Container()
-                    : ElevatedButton(
-                        onPressed: () async {
-                          if (_logs[index].voiceRecording != null) {
-                            await AudioPlayer().play(
-                                DeviceFileSource(_logs[index].voiceRecording!));
-                          }
-                        },
-                        child: Text('Play Recording'),
-                      ),
-                _logs[index].photo == null
-                    ? Container()
-                    : Hero(
-                        tag: 'imageHero${_logs[index].id}',
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) {
-                                  return Scaffold(
-                                    body: Center(
-                                      child: Image.file(
-                                        File(_logs[index].photo!),
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
+                  _logs[index].voiceRecording == null
+                      ? Container()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            if (_logs[index].voiceRecording != null) {
+                              await AudioPlayer().play(DeviceFileSource(
+                                  _logs[index].voiceRecording!));
+                            }
                           },
-                          child: SizedBox(
-                              width: 170,
-                              child: Image.file(
-                                File(_logs[index].photo!),
-                                fit: BoxFit.contain,
-                              )),
+                          child: Text('Play Recording'),
                         ),
-                      ),
-                Align(
-                    alignment: Alignment.bottomLeft,
-                    child: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => _deleteLog(index),
-                    )),
-              ],
-            ));
+                  _logs[index].photo == null
+                      ? Container()
+                      : Hero(
+                          tag: 'imageHero${_logs[index].id}',
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return Scaffold(
+                                      body: Center(
+                                        child: Image.file(
+                                          File(_logs[index].photo!),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                                width: 170,
+                                child: Image.file(
+                                  File(_logs[index].photo!),
+                                  fit: BoxFit.contain,
+                                )),
+                          ),
+                        ),
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _deleteLog(index),
+                      )),
+                ],
+              ));
+        } else
+          return Container();
       },
       itemCount: _logs.length,
     );

@@ -473,16 +473,15 @@ class _MediaPageState extends State<MediaPage> {
           child: Text("Stop Recording"),
         ),
         ElevatedButton(
-          onPressed: _submit,
-          child: Text("Submit"),
-        ),
-        ElevatedButton(
           onPressed: _takePhoto,
           child: Text("Take a Photo"),
         ),
-        if (imagePath != null) Text("Photo Captured: $imagePath"),
-        if (_recordingFile != null)
-          Text("Audio recorded: ${_recordingFile?.path}"),
+        ElevatedButton(
+          onPressed: _submit,
+          child: Text("Submit"),
+        ),
+        if (imagePath != null) Text("Photo Captured!"),
+        if (_recordingFile != null) Text("Audio recorded!"),
       ],
     );
   }
