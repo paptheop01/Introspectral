@@ -66,10 +66,38 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
     }
   }
 
+  String _getEmotionPath(int emotionID) {
+    switch (emotionID) {
+      case 0:
+        return 'assets/images/angry.png';
+      case 1:
+        return 'assets/images/annoyed.png';
+      case 2:
+        return 'assets/images/ashamed.png';
+      case 3:
+        return 'assets/images/bored.png';
+      case 4:
+        return 'assets/images/confused.png';
+      case 5:
+        return 'assets/images/content.png';
+      case 6:
+        return 'assets/images/curious.png';
+      case 7:
+        return 'assets/images/unkempt.png';
+      case 8:
+        return 'assets/images/energetic.png';
+      default:
+        return 'assets/images/angry.png';
+    }
+  }
+
   Widget _buildLogList() {
     return ListView.builder(
       itemBuilder: (context, index) {
         return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
             color: _getCardColor(_logs[index].emotionID),
             child: Column(
               children: [
@@ -78,9 +106,10 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
                   subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
                       .format(_logs[index].dateTime)
                       .toString()),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deleteLog(index),
+                  trailing: Image.asset(
+                    _getEmotionPath(_logs[index].emotionID),
+                    width: 42,
+                    height: 42,
                   ),
                 ),
                 _logs[index].voiceRecording == null
@@ -92,12 +121,12 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
                                 DeviceFileSource(_logs[index].voiceRecording!));
                           }
                         },
-                        child: Text('Play'),
+                        child: Text('Play Recording'),
                       ),
                 _logs[index].photo == null
                     ? Container()
                     : Hero(
-                        tag: 'imageHero',
+                        tag: 'imageHero${_logs[index].id}',
                         child: GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
@@ -122,7 +151,13 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
                                 fit: BoxFit.contain,
                               )),
                         ),
-                      )
+                      ),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => _deleteLog(index),
+                    )),
               ],
             ));
       },
