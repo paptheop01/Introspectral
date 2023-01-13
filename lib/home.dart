@@ -18,6 +18,8 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   int density = 0;
   List<Habit> _habits = <Habit>[];
   List<Habit> _habits4 = <Habit>[];
+  int _consecutiveDays = 0;
+  DateTime _lastUsedDate = DateTime.now();
 
   @override
   void initState() {
@@ -32,6 +34,35 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         _habits4 = habits4;
       });
     });
+    _loadCounter();
+  }
+
+  void _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _lastUsedDate =
+          DateTime.parse(prefs.getString('last_used_date') ?? '2022-01-20');
+      _consecutiveDays = prefs.getInt('consecutive_days') ?? 0;
+    });
+  }
+
+  void _updateCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    DateTime currentDate = DateTime.now();
+    if (_lastUsedDate != null &&
+        currentDate.difference(_lastUsedDate).inDays == 1) {
+      setState(() {
+        _consecutiveDays += 1;
+      });
+    } else {
+      setState(() {
+        _consecutiveDays = 1;
+      });
+    }
+    final lastUsedDate =
+        await prefs.setString('last_used_date', currentDate.toIso8601String());
+    final consecutiveDays =
+        await prefs.setInt('consecutive_days', _consecutiveDays);
   }
 
   void _seeHabits() async {
@@ -46,7 +77,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
   Widget _buildHabitList() {
     return ListView.separated(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       itemBuilder: (context, index) {
         IconData iconData;
         String toolTip;
@@ -122,23 +153,24 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
           ),
           Container(
             width: 400,
-            height: 400,
+            height: 800,
             child: Transform.translate(
               offset: Offset(0, 150),
               child: _buildHabitList(),
             ),
           ),
           Positioned(
-            bottom: 0,
+            key: UniqueKey(),
+            top: 350,
             left: 60,
             child: ElevatedButton(
               child: Text("See all habits"),
               onPressed: () {
-                //  Navigator.push(
-                // context,
-                // MaterialPageRoute(
-                //  builder: (context) => CalendarScreenWidget()),
-                // );
+                //  _seeHabits();
+                //   Navigator.of(context).push(PageRouteBuilder(
+                //     pageBuilder: (context, animation, animation1) {
+                //   return HabitListScreenWidget();
+                //    }));
               },
             ),
           ),
@@ -214,6 +246,53 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 color: Colors.black,
                 fontSize: 13,
               ),
+            ),
+          ),
+          Positioned(
+            bottom: 30,
+            left: 150,
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: <Widget>[
+                /*  Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 215, 255, 241),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(5, 5),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ), */
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: _updateCounter,
+                      child: Text('Check-in'),
+                    ),
+                    Image.asset(
+                      'assets/images/fire.png',
+                      width: 60,
+                      height: 60,
+                    ),
+                    Text('Streak: $_consecutiveDays',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          // fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

@@ -51,6 +51,7 @@ dependencies:
   path_provider:
   audioplayers: 
   audio_service:
+  page_transition: ^2.0.9
   
 dev_dependencies:
   build_runner: ^2.3.3 

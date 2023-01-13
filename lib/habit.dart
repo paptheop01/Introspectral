@@ -449,8 +449,6 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => HomeScreenWidget()));
         break;
       case 1:
         break;
