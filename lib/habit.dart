@@ -26,7 +26,13 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
       newHabit.id = newId;
 
       _habits.add(newHabit);
-      setState(() {});
+      final habits = await sqLiteservice.getHabits();
+      final sumt = await sqLiteservice.sumhabits_total();
+      final sumc = await sqLiteservice.sumhabits_completed();
+      setState(() {
+        _habits = habits;
+        _sum = sumc * 100 / sumt;
+      });
     }
   }
 
@@ -425,7 +431,13 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
       } catch (err) {
         debugPrint('Could not delete habit $habit : $err');
       }
-      setState(() {});
+      final habits = await sqLiteservice.getHabits();
+      final sumt = await sqLiteservice.sumhabits_total();
+      final sumc = await sqLiteservice.sumhabits_completed();
+      setState(() {
+        _habits = habits;
+        _sum = sumc * 100 / sumt;
+      });
     }
   }
 
