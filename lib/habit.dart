@@ -93,7 +93,11 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
             top: 55,
             right: 48,
             child: Text(
-              _sum.toStringAsFixed(1),
+              _sum != 100 && _sum > 10
+                  ? _sum.toStringAsFixed(1)
+                  : _sum != 100
+                      ? _sum.toStringAsFixed(2)
+                      : '100',
               style: TextStyle(
                 color: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 22,
