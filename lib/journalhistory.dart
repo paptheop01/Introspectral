@@ -27,6 +27,7 @@ class _HistoryLogWidgetState extends State<HistoryLogWidget> {
   late SQLservice sqLiteservice;
   List<Log> _logs = <Log>[];
 
+  @override
   void initState() {
     super.initState();
     sqLiteservice = SQLservice();

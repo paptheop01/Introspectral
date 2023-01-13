@@ -9,6 +9,7 @@ import 'package:introspectral/habit.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:introspectral/utils.dart';
 import 'package:introspectral/journalhistory.dart';
+import 'package:intl/intl.dart';
 
 class CalendarScreenWidget extends StatefulWidget {
   const CalendarScreenWidget({Key? key}) : super(key: key);
@@ -21,6 +22,9 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  Map<DateTime, int> _hasLog = {};
+  late SQLservice sqLiteservice;
+  List<Log> _logs = <Log>[];
   void _loghistory() async {
     String? history = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HistoryLogWidget(selectedDay: _selectedDay)));
@@ -28,6 +32,25 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
     if (history != null) {
       setState(() {});
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    sqLiteservice = SQLservice();
+    sqLiteservice.initDB().whenComplete(() async {
+      final logs = await sqLiteservice.getLogs();
+      for (Log log in logs) {
+        DateTime date = log.dateTime;
+        DateTime dateOnly = DateTime(date.year, date.month, date.day);
+        date = dateOnly;
+        _hasLog[date] = 1;
+        print(date);
+      }
+      setState(() {
+        _logs = logs;
+      });
+    });
   }
 
   @override
@@ -73,6 +96,11 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
               lastDay: kLastDay,
               focusedDay: _focusedDay,
               calendarFormat: CalendarFormat.month,
+              eventLoader: (day) {
+                return _hasLog[DateTime(day.year, day.month, day.day)] == 1
+                    ? [1]
+                    : [];
+              },
               selectedDayPredicate: (day) {
                 return isSameDay(_selectedDay, day);
               },
@@ -99,14 +127,17 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
               },
             ),
           ),
-          Positioned(
-            bottom: 120,
-            left: 130,
-            child: ElevatedButton(
-              child: Text("See that day's log"),
-              onPressed: () {
-                _loghistory();
-                /* Navigator.of(context).push(MaterialPageRoute(
+          _hasLog[DateTime(
+                      _focusedDay.year, _focusedDay.month, _focusedDay.day)] ==
+                  1
+              ? Positioned(
+                  bottom: 120,
+                  left: 130,
+                  child: ElevatedButton(
+                    child: Text("See that day's log"),
+                    onPressed: () {
+                      _loghistory();
+                      /* Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HistoryLogWidget(selectedDay  : _selectedDay)));
                  Navigator.push(
                   context,
@@ -116,9 +147,10 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
                 );
               } : null,
               */
-              },
-            ),
-          ),
+                    },
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
