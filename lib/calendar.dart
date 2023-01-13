@@ -8,6 +8,7 @@ import 'package:introspectral/main.dart';
 import 'package:introspectral/habit.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:introspectral/utils.dart';
+import 'package:introspectral/journalhistory.dart';
 
 class CalendarScreenWidget extends StatefulWidget {
   const CalendarScreenWidget({Key? key}) : super(key: key);
@@ -20,6 +21,14 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  void _loghistory() async {
+    String? history = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => HistoryLogWidget(selectedDay: _selectedDay)));
+
+    if (history != null) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +104,19 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
             left: 130,
             child: ElevatedButton(
               child: Text("See that day's log"),
-              onPressed: () {},
+              onPressed: () {
+                _loghistory();
+                /* Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => HistoryLogWidget(selectedDay  : _selectedDay)));
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DatePage(selectedDay: _selectedDay),
+                  ),
+                );
+              } : null,
+              */
+              },
             ),
           ),
         ],

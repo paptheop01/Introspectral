@@ -15,6 +15,7 @@ import 'package:introspectral/home.dart';
 import 'package:introspectral/journal.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:introspectral/calendar.dart';
+import 'package:introspectral/journalhistory.dart';
 
 void main() {
   runApp(const MyApp());
