@@ -45,7 +45,7 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
     return ListView.builder(
       itemBuilder: (context, index) {
         return Card(
-            child: Stack(
+            child: Column(
           children: [
             ListTile(
               title: Text(_logs[index].text),
@@ -68,6 +68,35 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
                     },
                     child: Text('Play'),
                   ),
+            _logs[index].photo == null
+                ? Container()
+                : Hero(
+                    tag: 'imageHero',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) {
+                              return Scaffold(
+                                body: Center(
+                                  child: Image.file(
+                                    File(_logs[index].photo!),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                          width: 170,
+                          child: Image.file(
+                            File(_logs[index].photo!),
+                            fit: BoxFit.contain,
+                          )),
+                    ),
+                  )
           ],
         ));
       },

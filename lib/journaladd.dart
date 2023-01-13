@@ -73,7 +73,7 @@ class EmotionsPage extends StatefulWidget {
 
 class _EmotionsPageState extends State<EmotionsPage> {
   // User can select one of the cards to indicate their emotion
-  int emotion_idx = -1;
+  static int emotion_idx = 4;
   @override
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
@@ -389,17 +389,28 @@ class _MediaPageState extends State<MediaPage> {
   Record? _recorder = Record();
   bool _isRecording = false;
   File? _recordingFile;
-
-  _initRec() async {
-    await Permission.camera.request();
-    await Permission.microphone.request();
-  }
+  File? _imageFile;
+  String? imagePath;
 
   void _takePhoto() async {
-    final image = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _image = image;
-    });
+    final permission = await Permission.camera.request();
+    final permissionStorage = await Permission.storage.status;
+    if (permission == PermissionStatus.granted &&
+        permissionStorage == PermissionStatus.granted) {
+      final image = await _picker.pickImage(source: ImageSource.camera);
+      Directory appDocDirectory = (await getExternalStorageDirectory())!;
+      String path = appDocDirectory.path +
+          "/${DateTime.now().millisecondsSinceEpoch}.png";
+      try {
+        setState(() {
+          imagePath = path;
+          _imageFile = File(image!.path);
+        });
+        await _imageFile!.copy(path);
+      } catch (e) {
+        return;
+      }
+    }
   }
 
   Future<String> _startRecording() async {
@@ -440,8 +451,9 @@ class _MediaPageState extends State<MediaPage> {
     if (_TextPageState._textformKey.currentState!.validate()) {
       final log = Log(
           text: _TextPageState._textController.text,
-          emotionID: 1, //int(_descriptionController.text) ,
+          emotionID: _EmotionsPageState.emotion_idx,
           dateTime: DateTime.now(),
+          photo: imagePath,
           voiceRecording: _recordingFile?.path);
       _TextPageState._textController.clear();
       Navigator.pop(context, log);
@@ -452,8 +464,6 @@ class _MediaPageState extends State<MediaPage> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        if (_recordingFile != null)
-          Text("Audio recorded: ${_recordingFile?.path}"),
         ElevatedButton(
           onPressed: _isRecording ? null : _startRecording,
           child: Text(_isRecording ? "Recording..." : "Start Recording"),
@@ -466,6 +476,13 @@ class _MediaPageState extends State<MediaPage> {
           onPressed: _submit,
           child: Text("Submit"),
         ),
+        ElevatedButton(
+          onPressed: _takePhoto,
+          child: Text("Take a Photo"),
+        ),
+        if (imagePath != null) Text("Photo Captured: $imagePath"),
+        if (_recordingFile != null)
+          Text("Audio recorded: ${_recordingFile?.path}"),
       ],
     );
   }
