@@ -135,12 +135,21 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                             ),
                             Spacer(),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_habits[index].completed > 0) {
                                   _habits[index].completed =
                                       _habits[index].completed - 1;
                                   sqLiteservice.updateComplete(_habits[index]);
-                                  setState(() {});
+                                  final habits =
+                                      await sqLiteservice.getHabits();
+                                  final sumt =
+                                      await sqLiteservice.sumhabits_total();
+                                  final sumc =
+                                      await sqLiteservice.sumhabits_completed();
+                                  setState(() {
+                                    _habits = habits;
+                                    _sum = sumc * 100 / sumt;
+                                  });
                                 }
                               },
                               child: Icon(
@@ -163,13 +172,22 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_habits[index].completed <
                                     _habits[index].goal) {
                                   _habits[index].completed =
                                       _habits[index].completed + 1;
                                   sqLiteservice.updateComplete(_habits[index]);
-                                  setState(() {});
+                                  final habits =
+                                      await sqLiteservice.getHabits();
+                                  final sumt =
+                                      await sqLiteservice.sumhabits_total();
+                                  final sumc =
+                                      await sqLiteservice.sumhabits_completed();
+                                  setState(() {
+                                    _habits = habits;
+                                    _sum = sumc * 100 / sumt;
+                                  });
                                 }
                               },
                               child: Icon(
@@ -312,13 +330,22 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                   ),
                                   Spacer(),
                                   ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_habits[index].completed > 0) {
                                         _habits[index].completed =
                                             _habits[index].completed - 1;
                                         sqLiteservice
                                             .updateComplete(_habits[index]);
-                                        setState(() {});
+                                        final habits =
+                                            await sqLiteservice.getHabits();
+                                        final sumt = await sqLiteservice
+                                            .sumhabits_total();
+                                        final sumc = await sqLiteservice
+                                            .sumhabits_completed();
+                                        setState(() {
+                                          _habits = habits;
+                                          _sum = sumc * 100 / sumt;
+                                        });
                                       }
                                     },
                                     child: Icon(
@@ -341,14 +368,23 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_habits[index].completed <
                                           _habits[index].goal) {
                                         _habits[index].completed =
                                             _habits[index].completed + 1;
                                         sqLiteservice
                                             .updateComplete(_habits[index]);
-                                        setState(() {});
+                                        final habits =
+                                            await sqLiteservice.getHabits();
+                                        final sumt = await sqLiteservice
+                                            .sumhabits_total();
+                                        final sumc = await sqLiteservice
+                                            .sumhabits_completed();
+                                        setState(() {
+                                          _habits = habits;
+                                          _sum = sumc * 100 / sumt;
+                                        });
                                       }
                                     },
                                     child: Icon(
