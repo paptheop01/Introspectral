@@ -41,64 +41,90 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
     );
   }
 
+  Color _getCardColor(int emotionID) {
+    switch (emotionID) {
+      case 0:
+        return Colors.red.withOpacity(0.37);
+      case 1:
+        return Colors.orange.withOpacity(0.37);
+      case 2:
+        return Colors.deepPurple.withOpacity(0.37);
+      case 3:
+        return Colors.blue.withOpacity(0.37);
+      case 4:
+        return Colors.green.withOpacity(0.37);
+      case 5:
+        return Colors.lightGreen.withOpacity(0.37);
+      case 6:
+        return Colors.yellow.withOpacity(0.37);
+      case 7:
+        return Colors.red.withOpacity(0.37);
+      case 8:
+        return Colors.lightBlue.withOpacity(0.37);
+      default:
+        return Colors.grey.withOpacity(0.37);
+    }
+  }
+
   Widget _buildLogList() {
     return ListView.builder(
       itemBuilder: (context, index) {
         return Card(
+            color: _getCardColor(_logs[index].emotionID),
             child: Column(
-          children: [
-            ListTile(
-              title: Text(_logs[index].text),
-              subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
-                  .format(_logs[index].dateTime)
-                  .toString()),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () => _deleteLog(index),
-              ),
-            ),
-            _logs[index].voiceRecording == null
-                ? Container()
-                : ElevatedButton(
-                    onPressed: () async {
-                      if (_logs[index].voiceRecording != null) {
-                        await AudioPlayer().play(
-                            DeviceFileSource(_logs[index].voiceRecording!));
-                      }
-                    },
-                    child: Text('Play'),
+              children: [
+                ListTile(
+                  title: Text(_logs[index].text),
+                  subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
+                      .format(_logs[index].dateTime)
+                      .toString()),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => _deleteLog(index),
                   ),
-            _logs[index].photo == null
-                ? Container()
-                : Hero(
-                    tag: 'imageHero',
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return Scaffold(
-                                body: Center(
-                                  child: Image.file(
-                                    File(_logs[index].photo!),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: SizedBox(
-                          width: 170,
-                          child: Image.file(
-                            File(_logs[index].photo!),
-                            fit: BoxFit.contain,
-                          )),
-                    ),
-                  )
-          ],
-        ));
+                ),
+                _logs[index].voiceRecording == null
+                    ? Container()
+                    : ElevatedButton(
+                        onPressed: () async {
+                          if (_logs[index].voiceRecording != null) {
+                            await AudioPlayer().play(
+                                DeviceFileSource(_logs[index].voiceRecording!));
+                          }
+                        },
+                        child: Text('Play'),
+                      ),
+                _logs[index].photo == null
+                    ? Container()
+                    : Hero(
+                        tag: 'imageHero',
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) {
+                                  return Scaffold(
+                                    body: Center(
+                                      child: Image.file(
+                                        File(_logs[index].photo!),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                              width: 170,
+                              child: Image.file(
+                                File(_logs[index].photo!),
+                                fit: BoxFit.contain,
+                              )),
+                        ),
+                      )
+              ],
+            ));
       },
       itemCount: _logs.length,
     );
