@@ -40,6 +40,35 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyInheritedWidget extends InheritedWidget {
+  final int _currentPage;
+  final Function(int) changePage;
+
+  MyInheritedWidget({
+    Key? key,
+    required Widget child,
+    required this.changePage,
+    required int currentPage,
+  })  : _currentPage = currentPage,
+        super(key: key, child: child);
+
+  static MyInheritedWidget? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();
+  }
+
+  
+  static MyInheritedWidget of(BuildContext context) {
+    final MyInheritedWidget? result = maybeOf(context);
+    assert(result != null, 'No Inherited Widget found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(MyInheritedWidget old) {
+    return _currentPage != old._currentPage;
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -79,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return MyInheritedWidget( changePage: _onItemTapped, currentPage: _selectedIndex,child:Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/back.png"),
@@ -134,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
-        ));
+        )));
   }
 }
 

@@ -165,7 +165,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             left: 60,
             child: ElevatedButton(
               child: Text("See all habits"),
-              onPressed: () {
+              onPressed: () { MyInheritedWidget.of(context).changePage(1);
                 //  _seeHabits();
                 //   Navigator.of(context).push(PageRouteBuilder(
                 //     pageBuilder: (context, animation, animation1) {
