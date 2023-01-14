@@ -426,7 +426,7 @@ class _MediaPageState extends State<MediaPage> {
           desiredAccuracy: LocationAccuracy.high);
       final city =
           await placemarkFromCoordinates(location.latitude, location.longitude);
-      await Future.delayed(Duration(seconds: 1));
+      //await Future.delayed(Duration(seconds: 1));
 
       setState(() {
         _latitude = location.latitude;

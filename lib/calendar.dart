@@ -134,7 +134,7 @@ class _CalendarScreenWidgetState extends State<CalendarScreenWidget> {
                   bottom: 120,
                   left: 130,
                   child: ElevatedButton(
-                    child: Text("See that day's log"),
+                    child: Text("See that day's Journal"),
                     onPressed: () {
                       _loghistory();
                       /* Navigator.of(context).push(MaterialPageRoute(
