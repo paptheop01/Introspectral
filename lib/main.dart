@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:introspectral/journal.dart';
+import 'package:introspectral/stats.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
@@ -72,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       HabitListScreenWidget(),
       JournalScreenWidget(),
       CalendarScreenWidget(),
+      StatsScreenWidget(),
     ];
   }
 
@@ -245,6 +247,15 @@ class SQLservice {
   Future<void> deleteLog(final id) async {
     final db = await initDB();
     await db.delete('logs', where: 'id=?', whereArgs: [id]);
+  }
+
+  Future<int> lifeMood() async {
+    final db = await initDB();
+    final queryResult = await db
+        .rawQuery(
+            'SELECT emotionID, COUNT(*) as count FROM logs GROUP BY emotionID ORDER BY count DESC LIMIT 1')
+        .then((data) => data.map((e) => Map.from(e)).toList());
+    return queryResult[0]['emotionID'];
   }
 
   Future<List<Habit>> getHabits() async {
