@@ -42,6 +42,7 @@ dependencies:
   sqflite: ^2.2.2
   path: ^1.8.2
   geolocator: ^9.0.2
+  geocoding:
   json_serializable: ^6.5.4
   flutter_calendar_carousel: ^2.4.1
   table_calendar: ^3.0.8

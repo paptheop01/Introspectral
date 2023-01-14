@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+
 import 'main.dart';
 import 'journal.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 
 class AddLogWidget extends StatefulWidget {
@@ -391,6 +394,9 @@ class _MediaPageState extends State<MediaPage> {
   File? _recordingFile;
   File? _imageFile;
   String? imagePath;
+  double? _latitude;
+  double? _longitude;
+  String? _city;
 
   void _takePhoto() async {
     final permission = await Permission.camera.request();
@@ -410,6 +416,23 @@ class _MediaPageState extends State<MediaPage> {
       } catch (e) {
         return;
       }
+    }
+  }
+
+  void _getLocation() async {
+    final permission = await Permission.location.request();
+    if (permission == PermissionStatus.granted) {
+      final location = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      final city =
+          await placemarkFromCoordinates(location.latitude, location.longitude);
+      await Future.delayed(Duration(seconds: 1));
+
+      setState(() {
+        _latitude = location.latitude;
+        _longitude = location.longitude;
+        _city = city[0].locality;
+      });
     }
   }
 
@@ -454,7 +477,10 @@ class _MediaPageState extends State<MediaPage> {
           emotionID: _EmotionsPageState.emotion_idx,
           dateTime: DateTime.now(),
           photo: imagePath,
-          voiceRecording: _recordingFile?.path);
+          voiceRecording: _recordingFile?.path,
+          latitude: _latitude,
+          longitude: _longitude,
+          city: _city);
       _TextPageState._textController.clear();
       Navigator.pop(context, log);
     }
@@ -477,11 +503,16 @@ class _MediaPageState extends State<MediaPage> {
           child: Text("Take a Photo"),
         ),
         ElevatedButton(
+          onPressed: _getLocation,
+          child: Text("Save my Location"),
+        ),
+        ElevatedButton(
           onPressed: _submit,
           child: Text("Submit"),
         ),
         if (imagePath != null) Text("Photo Captured!"),
         if (_recordingFile != null) Text("Audio recorded!"),
+        if (_city != null) Text("Location saved!"),
       ],
     );
   }

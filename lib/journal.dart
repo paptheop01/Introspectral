@@ -4,6 +4,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 import 'dart:io';
 
@@ -24,6 +26,8 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
   // Show a list of all the logs of today and allow the user to add new ones
   late SQLservice sqLiteservice;
   List<Log> _logs = <Log>[];
+  List<String> _cities = <String>[];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +115,8 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
       itemBuilder: (context, index) {
+        String locString =
+            _logs[index].city != null ? ', ${_logs[index].city!}' : '';
         if (DateFormat('yyyy-MM-dd').format(_logs[index].dateTime) ==
             DateFormat('yyyy-MM-dd').format(DateTime.now())) {
           return Card(
@@ -123,8 +129,9 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
                   ListTile(
                     title: Text(_logs[index].text),
                     subtitle: Text(DateFormat('yyyy-MM-dd HH:mm')
-                        .format(_logs[index].dateTime)
-                        .toString()),
+                            .format(_logs[index].dateTime)
+                            .toString() +
+                        locString),
                     trailing: Image.asset(
                       _getEmotionPath(_logs[index].emotionID),
                       width: 42,
