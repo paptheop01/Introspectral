@@ -3,11 +3,14 @@ import 'package:introspectral/journal.dart';
 import 'package:introspectral/stats.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
-
+import 'package:workmanager/workmanager.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:logger/logger.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
@@ -18,8 +21,23 @@ import 'package:geolocator/geolocator.dart';
 import 'package:introspectral/calendar.dart';
 import 'package:introspectral/journalhistory.dart';
 
-void main() {
+
+@pragma('vm:entry-point')
+  void updatereset() {
+    DateTime time=DateTime.now();
+    late SQLservice sqLiteservice;
+    sqLiteservice = SQLservice();
+    sqLiteservice.updatereset();
+    print('$time Tried to update');
+ 
+}
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+   await AndroidAlarmManager.initialize(); 
   runApp(const MyApp());
+  final int helloAlarmID = 0;
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset,);
 }
 
 class MyApp extends StatelessWidget {
@@ -311,6 +329,11 @@ class SQLservice {
         whereArgs: [habit.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+   Future<void> updatereset() async {
+    final db = await initDB();
+    await db.update('habits', {'completed': 0},
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
 
   Future<List<Habit>> getHabits4top() async {
     final db = await initDB();
@@ -343,3 +366,87 @@ class SQLservice {
     await db.delete('habits');
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+class UpdateHabitsWorker extends SimpleWorker {
+  bool _firstRunAfterConstraintsNotMet = false;
+
+  @override
+  Future<void> doWork() async {
+    // check if it's running after failed attempt
+    if(_firstRunAfterConstraintsNotMet)
+    {
+      // Open the database
+      var database = await openDatabase('habits.db');
+      // Update the "completed" column of all habits
+      await database.rawUpdate("UPDATE habits SET completed = 0");
+      // Close the database
+      await database.close();
+      _firstRunAfterConstraintsNotMet = false;
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
+  }
+
+  @override
+  void onConstraintsNotMet() {
+    _firstRunAfterConstraintsNotMet = true;
+    //cancel all the tasks
+    Workmanager().cancelAll();
+    //Immediately re-schedule the task
+    Workmanager().enqueue(taskName, constraints: Constraints(networkType: NetworkType.connected));
+    
+    //create an Intent to launch the UpdateHabitsWorker
+    var androidIntent = new AndroidIntent(
+      actions: 'com.example.updatehabits',
+      component: new AndroidComponent(
+        component: 'com.example.updatehabits/com.example.updatehabits.UpdateHabitsWorker',
+      ),
+    );
+    var pendingIntent = PendingIntent.fromAndroidIntent(androidIntent);
+    //create an AlarmManager to schedule the task
+        var alarmManager = AndroidAlarmManager.create();
+    alarmManager.set(AndroidAlarmType.RTC_WAKEUP, DateTime.now().millisecondsSinceEpoch, pendingIntent);
+  }
+
+  void scheduleHabitsUpdate() {
+    // Configure Workmanager to run our Worker at midnight every day
+    var constraints = new Constraints(
+        networkType: NetworkType.connected,
+        requiresBatteryNotLow: true);
+
+    Workmanager.initialize(
+        callbackDispatcher,
+        isInDebugMode: true,
+        constraints: constraints);
+    Workmanager().registerPeriodicTask(
+        "1",
+        "updateHabits",
+        frequency: Duration(days: 1),
+        initialDelay: Duration(seconds: 5),
+        constraints: constraints);
+  }
+}
+*/
