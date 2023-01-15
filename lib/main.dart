@@ -37,7 +37,7 @@ void main() async{
    await AndroidAlarmManager.initialize(); 
   runApp(const MyApp());
   final int helloAlarmID = 0;
-  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset,);
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset, startAt: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,15,20,30),rescheduleOnReboot: true,allowWhileIdle: true,wakeup: true);
 }
 
 class MyApp extends StatelessWidget {
