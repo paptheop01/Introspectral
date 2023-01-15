@@ -11,6 +11,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:logger/logger.dart';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/painting/box_decoration.dart';
@@ -21,23 +22,27 @@ import 'package:geolocator/geolocator.dart';
 import 'package:introspectral/calendar.dart';
 import 'package:introspectral/journalhistory.dart';
 
-
 @pragma('vm:entry-point')
-  void updatereset() {
-    DateTime time=DateTime.now();
-    late SQLservice sqLiteservice;
-    sqLiteservice = SQLservice();
-    sqLiteservice.updatereset();
-    print('$time Tried to update');
- 
+void updatereset() {
+  DateTime time = DateTime.now();
+  late SQLservice sqLiteservice;
+  sqLiteservice = SQLservice();
+  sqLiteservice.updatereset();
+  print('$time Tried to update');
 }
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await AndroidAlarmManager.initialize(); 
+  await AndroidAlarmManager.initialize();
   runApp(const MyApp());
   final int helloAlarmID = 0;
-  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset, startAt: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,15,20,30),rescheduleOnReboot: true,allowWhileIdle: true,wakeup: true);
+  await AndroidAlarmManager.periodic(
+      const Duration(minutes: 1), helloAlarmID, updatereset,
+      startAt: DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, 15, 20, 30),
+      rescheduleOnReboot: true,
+      allowWhileIdle: true,
+      wakeup: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -74,7 +79,6 @@ class MyInheritedWidget extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();
   }
 
-  
   static MyInheritedWidget of(BuildContext context) {
     final MyInheritedWidget? result = maybeOf(context);
     assert(result != null, 'No Inherited Widget found in context');
@@ -126,62 +130,65 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MyInheritedWidget( changePage: _onItemTapped, currentPage: _selectedIndex,child:Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/back.png"),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.1),
-              BlendMode.darken,
+    return MyInheritedWidget(
+        changePage: _onItemTapped,
+        currentPage: _selectedIndex,
+        child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/back.png"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.1),
+                  BlendMode.darken,
+                ),
+              ),
             ),
-          ),
-        ),
-        child: Scaffold(
-          body: PageView(
-            controller: _pageController,
-            children: _pages,
-            onPageChanged: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: _onItemTapped,
-            currentIndex: _selectedIndex,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Colors.green, // SELECTED TAB COLOR
-            unselectedItemColor: const Color(0xCFFFFFFF),
-            backgroundColor: Colors.grey, // BACKGROUND COLOR
-            iconSize: 30,
-            selectedFontSize: 15,
-            unselectedFontSize: 15,
-            elevation: 12,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
+            child: Scaffold(
+              body: PageView(
+                controller: _pageController,
+                children: _pages,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'Habits',
+              bottomNavigationBar: BottomNavigationBar(
+                onTap: _onItemTapped,
+                currentIndex: _selectedIndex,
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: Colors.green, // SELECTED TAB COLOR
+                unselectedItemColor: const Color(0xCFFFFFFF),
+                backgroundColor: Colors.grey, // BACKGROUND COLOR
+                iconSize: 30,
+                selectedFontSize: 15,
+                unselectedFontSize: 15,
+                elevation: 12,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite),
+                    label: 'Habits',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.note),
+                    label: 'Log',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_today),
+                    label: 'Calendar',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.show_chart),
+                    label: 'Stats',
+                  ),
+                ],
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.note),
-                label: 'Log',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today),
-                label: 'Calendar',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.show_chart),
-                label: 'Stats',
-              ),
-            ],
-          ),
-        )));
+            )));
   }
 }
 
@@ -296,13 +303,36 @@ class SQLservice {
     await db.delete('logs', where: 'id=?', whereArgs: [id]);
   }
 
-  Future<int> lifeMood() async {
+  Future<List<Map<dynamic, dynamic>>> lifeMood() async {
     final db = await initDB();
     final queryResult = await db
         .rawQuery(
-            'SELECT emotionID, COUNT(*) as count FROM logs GROUP BY emotionID ORDER BY count DESC LIMIT 1')
+            'SELECT emotionID, COUNT(*) as count FROM logs GROUP BY emotionID ORDER BY count DESC LIMIT 3')
         .then((data) => data.map((e) => Map.from(e)).toList());
-    return queryResult[0]['emotionID'];
+    return queryResult;
+  }
+
+  Future<int> weekMood() async {
+    final db = await initDB();
+    String query = '''
+    SELECT emotionID, COUNT(emotionID) as frequency 
+    FROM logs
+    WHERE dateTime >= ?
+    GROUP BY emotionID
+    HAVING COUNT(emotionID) = (SELECT MAX(frequency) FROM (SELECT emotionID, COUNT(emotionID) as frequency
+                                 FROM logs
+                                 WHERE dateTime >= ?
+                                 GROUP BY emotionID))
+  ''';
+    final now = DateTime.now();
+    final dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+        .format(now.subtract(Duration(days: 7)));
+    final queryResult = await db.rawQuery(query, [dateString, dateString]).then(
+        (data) => data.map((e) => Map.from(e)).toList());
+    if (queryResult.isEmpty)
+      return -1;
+    else
+      return queryResult[0]['emotionID'];
   }
 
   Future<List<Habit>> getHabits() async {
@@ -329,7 +359,8 @@ class SQLservice {
         whereArgs: [habit.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
-   Future<void> updatereset() async {
+
+  Future<void> updatereset() async {
     final db = await initDB();
     await db.update('habits', {'completed': 0},
         conflictAlgorithm: ConflictAlgorithm.replace);
