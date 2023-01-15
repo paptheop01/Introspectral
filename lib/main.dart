@@ -28,6 +28,7 @@ import 'package:introspectral/journalhistory.dart';
     late SQLservice sqLiteservice;
     sqLiteservice = SQLservice();
     sqLiteservice.updatereset();
+    _updatealarm();
     print('$time Tried to update');
  
 }
@@ -37,8 +38,31 @@ void main() async{
    await AndroidAlarmManager.initialize(); 
   runApp(const MyApp());
   final int helloAlarmID = 0;
-  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset, startAt: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,15,20,30),rescheduleOnReboot: true,allowWhileIdle: true,wakeup: true);
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), helloAlarmID, updatereset, startAt: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,19,10,30),rescheduleOnReboot: true,allowWhileIdle: true,wakeup: true);
 }
+
+ void _loadalarm() async {
+    SharedPreferences prefsalarm = await SharedPreferences.getInstance();
+    var CurrentDate=DateTime.now();
+    var last_alarm_date= 
+     DateTime.parse(prefsalarm.getString('last_alarm_date') ?? '2022-01-01');
+    if(last_alarm_date==DateTime.parse('2022-01-01') || CurrentDate.day!=last_alarm_date.day ){
+      print('Update from init');
+      updatereset();
+
+
+    } 
+    
+  }
+
+  void _updatealarm() async {
+    SharedPreferences prefsalarm = await SharedPreferences.getInstance();
+    
+    DateTime currentDate = DateTime.now();
+    
+    var lastUsedDate =
+        await prefsalarm.setString('last_alarm_date', currentDate.toIso8601String());
+  }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -122,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
       CalendarScreenWidget(),
       StatsScreenWidget(),
     ];
+    _loadalarm();
   }
 
   @override

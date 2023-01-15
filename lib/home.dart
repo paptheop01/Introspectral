@@ -34,7 +34,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         _habits4 = habits4;
       });
     });
-    _loadCounter();
+    _loadCounter(); 
   }
 
   void _loadCounter() async {
@@ -64,7 +64,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     final consecutiveDays =
         await prefs.setInt('consecutive_days', _consecutiveDays);
   }
-
+ 
   void _seeHabits() async {
     Habit? habit = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HabitListScreenWidget()));
