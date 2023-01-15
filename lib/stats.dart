@@ -38,7 +38,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
 
   void _petshop() async {
     String? petshop = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
+        .push(MaterialPageRoute(builder: (context) => PetShopWidget()));
 
     if (petshop != null) {
       setState(() {});
@@ -241,7 +241,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
             child: ElevatedButton(
               child: Text("Trip down memory lane"),
               onPressed: () {
-                _logmap();
+                //_logmap();
               },
             ),
           ),
