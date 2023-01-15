@@ -8,6 +8,8 @@ import 'package:record/record.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:math';
+import 'package:introspectral/logmap.dart';
+import 'package:introspectral/petshop.dart';
 
 class StatsScreenWidget extends StatefulWidget {
   const StatsScreenWidget({Key? key}) : super(key: key);
@@ -24,6 +26,24 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
   int _weekmood = 0;
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
+
+  void _logmap() async {
+    String? logmap = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
+
+    if (logmap != null) {
+      setState(() {});
+    }
+  }
+
+  void _petshop() async {
+    String? petshop = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
+
+    if (petshop != null) {
+      setState(() {});
+    }
+  }
 
   void initState() {
     super.initState();
@@ -204,6 +224,26 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
             child: _buildAnimMood(context, _weekmood),
             width: 42,
             height: 42,
+          ),
+          Positioned(
+            bottom: 170,
+            left: 130,
+            child: ElevatedButton(
+              child: Text("Pet Shop!"),
+              onPressed: () {
+                _petshop();
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 120,
+            left: 130,
+            child: ElevatedButton(
+              child: Text("Trip down memory lane"),
+              onPressed: () {
+                _logmap();
+              },
+            ),
           ),
         ],
       ),

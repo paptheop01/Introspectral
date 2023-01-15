@@ -137,11 +137,11 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             ),
           ),
           Positioned(
-            top: 150,
+            top: 130,
             left: 20,
             child: Container(
               width: 190,
-              height: 250,
+              height: 280,
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 215, 255, 241),
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -151,21 +151,33 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               ),
             ),
           ),
+          Positioned(
+            top: 150,
+            left: 80,
+            child: Text(
+              'Habit List',
+              style: TextStyle(
+                color: Color.fromARGB(255, 0, 80, 89),
+                fontSize: 18,
+              ),
+            ),
+          ),
           Container(
             width: 400,
             height: 800,
             child: Transform.translate(
-              offset: Offset(0, 150),
+              offset: Offset(0, 175),
               child: _buildHabitList(),
             ),
           ),
           Positioned(
             key: UniqueKey(),
-            top: 350,
+            top: 360,
             left: 60,
             child: ElevatedButton(
               child: Text("See all habits"),
-              onPressed: () { MyInheritedWidget.of(context).changePage(1);
+              onPressed: () {
+                MyInheritedWidget.of(context).changePage(1);
                 //  _seeHabits();
                 //   Navigator.of(context).push(PageRouteBuilder(
                 //     pageBuilder: (context, animation, animation1) {
