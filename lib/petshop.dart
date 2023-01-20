@@ -22,16 +22,98 @@ class PetShopWidget extends StatefulWidget {
 
 class _PetShopWidgetState extends State<PetShopWidget> {
   @override
+  Widget thepetshop() {
+    return GridView.count(
+      crossAxisCount: 2,
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/duck.png",
+              width: 80,
+              height: 80,
+            ),
+            ElevatedButton(
+              child: Text("Buy"),
+              onPressed: () {
+                // button 1 pressed
+              },
+            )
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/sroom.png",
+              width: 80,
+              height: 80,
+            ),
+            ElevatedButton(
+              child: Text("Buy"),
+              onPressed: () {
+                // button 2 pressed
+              },
+            )
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/fatdog.png",
+              width: 80,
+              height: 80,
+            ),
+            ElevatedButton(
+              child: Text("Buy"),
+              onPressed: () {
+                // button 3 pressed
+              },
+            )
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/yoshi.png",
+              width: 80,
+              height: 80,
+            ),
+            ElevatedButton(
+              child: Text("Buy"),
+              onPressed: () {
+                // button 4 pressed
+              },
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 202, 212, 211),
-      appBar: AppBar(
-        title: const Text('Welcome to PetShop'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/back.png"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.1),
+            BlendMode.darken,
+          ),
+        ),
       ),
-      body: Stack(children: <Widget>[
-        Container(),
-        //_buildLogList(),
-      ]),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Welcome to PetShop'),
+        ),
+        body: Stack(children: <Widget>[
+          Transform.translate(
+            offset: Offset(0, 65),
+            child: thepetshop(),
+          ),
+          //_buildLogList(),
+        ]),
+      ),
     );
   }
 }

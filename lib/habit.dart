@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
 import 'main.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
 
 import 'home.dart';
@@ -17,6 +17,23 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   late SQLservice sqLiteservice;
   List<Habit> _habits = <Habit>[];
   double _sum = 0.0;
+  int _scorecounter = 0;
+
+  void _loadScore() async {
+    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    setState(() {
+      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+    });
+  }
+
+  void _updateScore() async {
+    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+
+    setState(() {
+      _scorecounter += 100;
+    });
+    final scorecounter = await prefs2.setInt('scorecounter', _scorecounter);
+  }
 
   void _addNewHabit() async {
     Habit? newHabit = await Navigator.of(context)
@@ -32,6 +49,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
       setState(() {
         _habits = habits;
         _sum = sumc * 100 / sumt;
+        //if (sumc == sumt) _scorecounter++;
       });
     }
   }
@@ -47,6 +65,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
       setState(() {
         _habits = habits;
         _sum = sumc * 100 / sumt;
+        _loadScore();
       });
     });
   }
@@ -159,6 +178,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                   setState(() {
                                     _habits = habits;
                                     _sum = sumc * 100 / sumt;
+                                    if (sumc == sumt) {
+                                      _updateScore();
+                                    }
                                   });
                                 }
                               },
@@ -197,6 +219,9 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                   setState(() {
                                     _habits = habits;
                                     _sum = sumc * 100 / sumt;
+                                    if (sumc == sumt) {
+                                      _updateScore();
+                                    }
                                   });
                                 }
                               },

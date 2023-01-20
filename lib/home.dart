@@ -20,7 +20,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   List<Habit> _habits4 = <Habit>[];
   int _consecutiveDays = 0;
   DateTime _lastUsedDate = DateTime.now();
-
+  int checkin = 0;
   @override
   void initState() {
     super.initState();
@@ -32,9 +32,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       setState(() {
         _habits = habits;
         _habits4 = habits4;
+        _loadCounter();
       });
     });
-    _loadCounter(); 
   }
 
   void _loadCounter() async {
@@ -53,10 +53,12 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         currentDate.difference(_lastUsedDate).inDays == 1) {
       setState(() {
         _consecutiveDays += 1;
+        checkin = 1;
       });
     } else {
       setState(() {
         _consecutiveDays = 1;
+        checkin = 0;
       });
     }
     final lastUsedDate =
@@ -64,7 +66,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     final consecutiveDays =
         await prefs.setInt('consecutive_days', _consecutiveDays);
   }
- 
+
   void _seeHabits() async {
     Habit? habit = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HabitListScreenWidget()));

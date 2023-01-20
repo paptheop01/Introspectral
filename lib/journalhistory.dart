@@ -95,6 +95,7 @@ class _HistoryLogWidgetState extends State<HistoryLogWidget> {
         if (DateFormat('yyyy-MM-dd').format(_logs[index].dateTime) ==
             DateFormat('yyyy-MM-dd')
                 .format(widget.selectedDay ?? DateTime.now()))
+          // ignore: curly_braces_in_flow_control_structures
           return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
