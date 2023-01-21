@@ -30,6 +30,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   late int _scorecounter = 0;
+  // nothing yet perimenoume google maps
   void _logmap() async {
     String? logmap = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
@@ -39,6 +40,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
     }
   }
 
+  // kanei navigate sto petshop page
   void _petshop() async {
     String? petshop = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => PetShopWidget()));
@@ -48,6 +50,15 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
     }
   }
 
+  // enhmerwnei timi ton points
+  void _loadScore() async {
+    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    setState(() {
+      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+    });
+  }
+
+  // init
   void initState() {
     super.initState();
 
@@ -86,6 +97,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
       setState(() {
         _lifemood = lifemood;
         _weekmood = weekmood;
+        _loadScore();
       });
     });
 
@@ -94,6 +106,9 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
       setState(() {
         _scorecounter = prefs2.getInt('scorecounter') ?? 0;
       });
+    });
+    setState(() {
+      _loadScore();
     });
   }
 
@@ -255,7 +270,6 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                         style: TextStyle(
                           fontSize: 18,
                           color: Color.fromARGB(255, 255, 255, 255),
-                          // fontWeight: FontWeight.bold,
                         )),
                   ),
                   SizedBox(height: 10),
@@ -265,7 +279,6 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                       style: TextStyle(
                         fontSize: 18,
                         color: Color.fromARGB(255, 255, 255, 255),
-                        // fontWeight: FontWeight.bold,
                       )),
                   SizedBox(height: 10),
                   Container(
