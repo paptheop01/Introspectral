@@ -1,9 +1,12 @@
 import 'main.dart';
 import 'journal.dart';
+import 'habit.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:record/record.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -26,7 +29,8 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
   int _weekmood = 0;
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
-
+  late int _scorecounter = 0;
+  // nothing yet perimenoume google maps
   void _logmap() async {
     String? logmap = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
@@ -36,15 +40,25 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
     }
   }
 
+  // kanei navigate sto petshop page
   void _petshop() async {
     String? petshop = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => MapLogWidget()));
+        .push(MaterialPageRoute(builder: (context) => PetShopWidget()));
 
     if (petshop != null) {
       setState(() {});
     }
   }
 
+  // enhmerwnei timi ton points
+  void _loadScore() async {
+    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    setState(() {
+      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+    });
+  }
+
+  // init
   void initState() {
     super.initState();
 
@@ -83,7 +97,18 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
       setState(() {
         _lifemood = lifemood;
         _weekmood = weekmood;
+        _loadScore();
       });
+    });
+
+    SharedPreferences.getInstance().then((prefs2) {
+      // Get the value of the counter variable from shared preferences
+      setState(() {
+        _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+      });
+    });
+    setState(() {
+      _loadScore();
     });
   }
 
@@ -225,24 +250,47 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
             width: 42,
             height: 42,
           ),
-          Positioned(
-            bottom: 170,
-            left: 130,
-            child: ElevatedButton(
-              child: Text("Pet Shop!"),
-              onPressed: () {
-                _petshop();
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 120,
-            left: 130,
-            child: ElevatedButton(
-              child: Text("Trip down memory lane"),
-              onPressed: () {
-                _logmap();
-              },
+          Transform.translate(
+            offset: Offset(0, 255),
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: ElevatedButton(
+                      child: Text("Trip down memory lane"),
+                      onPressed: () {
+                        //_logmap();
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    child: Text('So far you have collected',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        )),
+                  ),
+                  SizedBox(height: 10),
+                  Image.asset('assets/images/duck.png'),
+                  SizedBox(height: 10),
+                  Text(_scorecounter.toString() + ' points',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      )),
+                  SizedBox(height: 10),
+                  Container(
+                    child: ElevatedButton(
+                      child: Text("Pet Shop!"),
+                      onPressed: () {
+                        _petshop();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
