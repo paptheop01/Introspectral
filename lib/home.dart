@@ -3,6 +3,7 @@ import 'package:introspectral/habitadd.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'habit.dart';
+import 'journal.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -75,11 +76,22 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     }
   }
 
+  void _seeJournal() async {
+    Habit? habit = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => JournalScreenWidget()));
+    if (habit != null) {
+      setState(() {});
+    }
+  }
+
   //double watercups =
 
   Widget _buildHabitList() {
     return ListView.separated(
-      padding: const EdgeInsets.all(3.0),
+      padding: EdgeInsets.only(
+        //  left: -5.0,
+        right: 0,
+      ),
       itemBuilder: (context, index) {
         IconData iconData;
         String toolTip;
@@ -90,28 +102,49 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         textDEc = TextDecoration.none;
 
         return Container(
-          //height: 35.0,
-          width: 3.0,
+          height: 40.0,
+          width: 20.0,
           child: ListTile(
             dense: true,
-            visualDensity: VisualDensity(horizontal: 1.0, vertical: -4.0),
-            leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 30.0,
-              child: Icon(
-                Icons.favorite,
-                color: Colors.red,
-                size: 35.0,
+            //visualDensity: VisualDensity(horizontal: 1.0, vertical: -1.0),
+            leading: SizedBox(
+              width: 20,
+              child: CircleAvatar(
+                backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                radius: 1.0,
+                child: Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 20.0,
+                ),
               ),
             ),
+            /*
+            title: RichText(
+              text: TextSpan(
+                children: <TextSpan>[
+                  WidgetSpan(child: Icon(Icons.add),),
+                  TextSpan(
+                    text: _habits4[index].title,
+                  ),
+                ],
+              ),
+            ), */
             title: Text(
               _habits4[index].title,
               style: TextStyle(decoration: textDEc),
             ),
+            contentPadding: EdgeInsets.only(
+              left: 15.0,
+            ),
           ),
         );
       },
-      separatorBuilder: (context, index) => const Divider(),
+      separatorBuilder: (context, index) => const Divider(
+        indent: 0.1,
+        thickness: 0.1,
+        height: 0.1,
+      ),
       itemCount: _habits4.length,
     );
   }
@@ -140,9 +173,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
           ),
           Positioned(
             top: 130,
-            left: 20,
+            left: 13,
             child: Container(
-              width: 190,
+              width: 203,
               height: 280,
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 215, 255, 241),
@@ -262,13 +295,82 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 30,
-            left: 150,
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                /*  Container(
+          Transform.translate(
+            offset: Offset(0, 205),
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: Positioned(
+                key: UniqueKey(),
+                bottom: 30,
+                left: 150,
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Column(
+                      key: UniqueKey(),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Keep checking-in to stay consistent!',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(126, 255, 255, 255),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 13.0,
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateCounter,
+                          child: Text('Check-in'),
+                        ),
+                        Image.asset(
+                          'assets/images/fire.png',
+                          width: 40,
+                          height: 40,
+                        ),
+                        Text(
+                          'Your Streak: $_consecutiveDays',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 25.0,
+                        ),
+                        Text(
+                          'Recording your thoughts can help you \n become more mindful and introspective',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(186, 255, 255, 255),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        Text(
+                          'Be sure to daily update\n your journal to track your day!',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(186, 255, 255, 255),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        /*
+                        ElevatedButton(
+                          key: UniqueKey(),
+                          onPressed: _updateCounter,
+                          //MyInheritedWidget.of(context).changePage(1),
+                          child: Text('Add log to journal'),
+                        ), */
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              /*  Container(
                   width: 90,
                   height: 90,
                   decoration: BoxDecoration(
@@ -286,7 +388,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                 ), */
-                Column(
+              /*     Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
@@ -305,8 +407,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                           // fontWeight: FontWeight.bold,
                         )),
                   ],
-                ),
-              ],
+                ), */
             ),
           ),
         ],
