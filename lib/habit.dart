@@ -36,160 +36,178 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   }
 
   void _addNewHabit() async {
-      final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    final _titleController = TextEditingController();
+    final _descriptionController = TextEditingController();
 
-    Habit? newHabit = /*await Navigator.of(context)
+    Habit?
+        newHabit = /*await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => ViewEditHabitWidget()));*/
-         await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                  backgroundColor: Color(0xFF83B7B5),
-                                  title: const Text(
-                                    "Add new habit",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  content: Container(
-                                      height: 250,
-                                      width: 331,
-                                      padding:
-                                          EdgeInsets.only(left: 15, right: 15),
-                                      child: Form(
-          key: _formKey,
-          child: SizedBox(
-            height: 220,
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-                Padding(padding: const EdgeInsets.only(left: 83.0),
-                  child:  Text('Description'),),
-                 Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  maxLines: 1,
-                  maxLength: 20,
-                  decoration: const InputDecoration(
-                     // hintText: 'Title',
-                      constraints: BoxConstraints(minHeight: 50,maxHeight: 50),
-                      filled: true,
-                    fillColor: Color(0xFFE3F8FF),
-                      border: OutlineInputBorder(borderSide: BorderSide(), borderRadius: const BorderRadius.all(
-            const Radius.circular(25.0),
-          ),)),
-                      
-                  controller: _titleController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Description cannot by empty';
-                    }
-                    return null;
-                  },
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                backgroundColor: Color(0xFF83B7B5),
+                title: const Text(
+                  "Add new habit",
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              Row(
-                //padding: const EdgeInsets.all(8.0),
-                children: [const Padding(padding: EdgeInsets.only(left:8.0,right:2.0,bottom: 18.0),child: Text('Number of times: '),),Padding(padding: const EdgeInsets.only(right:4.0,top: 8.0,bottom: 8.0),
-                  child: SizedBox(width: 107,
-                  child: TextFormField(
-                  maxLength: 2,
-                  maxLines: 1,
-                  decoration: const InputDecoration(
-                    constraints: BoxConstraints(maxHeight: 50,minHeight: 40),
-                    filled: true,
-                    fillColor: Color(0xFFE3F8FF),
-                      //hintText: 'Goal',
-                      border: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-            const Radius.circular(25.0),
-          ),
-                        borderSide: BorderSide())),
-                  controller: _descriptionController,
-                  validator: (value) {
-                      if (value==null||value.isEmpty) {
-                          return 'Νumber';
-                        }
-                        if (int.tryParse(value) == null) {
-                          return 'Νumber';
-                        }
-                        return null;
-                      },
-                ),))]
-              ),
-             Flexible(fit: FlexFit.tight ,child: SizedBox()),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Row(
-                  children: <Widget>[
-                    
-                    Padding(
-                      padding: const EdgeInsets.only(bottom:2.0),
-                      child: InkWell(
-                                              
-                                              child: PhysicalModel(
-                                                  elevation: 8.0,
-                                                  color: Color(0xFF006269),
-                                                  borderRadius:
-                                                      BorderRadius.circular(25),
-                                                  child: Container(
-                                                      width: 100,
-                                                      height: 32,
-                                                      child: Center(
-                                                          child: Text("Cancel",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white))))),
-                        
-                      
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      
-              )),
-                    const Flexible(fit: FlexFit.tight, child: SizedBox()),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                                              
-                                              child: PhysicalModel(
-                                                  elevation: 8.0,
-                                                  color: Color(0xFF6C559C),
-                                                  borderRadius:
-                                                      BorderRadius.circular(25),
-                                                  child: Container(
-                                                      width: 100,
-                                                      height: 32,
-                                                      child: Center(
-                                                          child: Text("Save Habit",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white))))),
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            final habit = Habit(
-                                title: _titleController.text,
-                                goal: int.parse(_descriptionController.text), //int(_descriptionController.text) ,
+                content: Container(
+                  height: 250,
+                  width: 331,
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  child: Form(
+                      key: _formKey,
+                      child: SizedBox(
+                          height: 220,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 83.0),
+                                child: Text('Description'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  maxLines: 1,
+                                  maxLength: 20,
+                                  decoration: const InputDecoration(
+                                      // hintText: 'Title',
+                                      constraints: BoxConstraints(
+                                          minHeight: 50, maxHeight: 50),
+                                      filled: true,
+                                      fillColor: Color(0xFFE3F8FF),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(),
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(25.0),
+                                        ),
+                                      )),
+                                  controller: _titleController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Description cannot by empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Row(
+                                  //padding: const EdgeInsets.all(8.0),
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 8.0, right: 2.0, bottom: 18.0),
+                                      child: Text('Number of times: '),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 4.0, top: 8.0, bottom: 8.0),
+                                        child: SizedBox(
+                                          width: 107,
+                                          child: TextFormField(
+                                            maxLength: 2,
+                                            maxLines: 1,
+                                            decoration: const InputDecoration(
+                                                constraints: BoxConstraints(
+                                                    maxHeight: 50,
+                                                    minHeight: 40),
+                                                filled: true,
+                                                fillColor: Color(0xFFE3F8FF),
+                                                //hintText: 'Goal',
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      const Radius.circular(
+                                                          25.0),
+                                                    ),
+                                                    borderSide: BorderSide())),
+                                            controller: _descriptionController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Νumber';
+                                              }
+                                              if (int.tryParse(value) == null) {
+                                                return 'Νumber';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ))
+                                  ]),
+                              Flexible(fit: FlexFit.tight, child: SizedBox()),
+                              Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 2.0),
+                                        child: InkWell(
+                                          child: PhysicalModel(
+                                              elevation: 8.0,
+                                              color: Color(0xFF006269),
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                              child: Container(
+                                                  width: 100,
+                                                  height: 32,
+                                                  child: Center(
+                                                      child: Text("Cancel",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white))))),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )),
+                                    const Flexible(
+                                        fit: FlexFit.tight, child: SizedBox()),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: InkWell(
+                                        child: PhysicalModel(
+                                            elevation: 8.0,
+                                            color: Color(0xFF6C559C),
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            child: Container(
+                                                width: 100,
+                                                height: 32,
+                                                child: Center(
+                                                    child: Text("Save Habit",
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .white))))),
+                                        onTap: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            final habit = Habit(
+                                                title: _titleController.text,
+                                                goal: int.parse(
+                                                    _descriptionController
+                                                        .text), //int(_descriptionController.text) ,
 
-                                completed: 0);
+                                                completed: 0);
 
-                            Navigator.pop(context, habit);
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ))),
+                                            Navigator.pop(context, habit);
+                                          }
+                                        },
                                       ),
-                                );});
-    
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ))),
+                ),
+              );
+            });
+
     if (newHabit != null) {
       final newId = await sqLiteservice.addHabit(newHabit);
       newHabit.id = newId;
@@ -204,6 +222,30 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         //if (sumc == sumt) _scorecounter++;
       });
     }
+  }
+
+  _congrats() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Color(0xFF83B7B5),
+            title: Text('Congrats!'),
+            content: Text(
+                "You just completed your habits \n for the day! \n You gained 100 points!",
+                textAlign: TextAlign.center),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -332,6 +374,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                     _sum = sumc * 100 / sumt;
                                     if (sumc == sumt) {
                                       _updateScore();
+                                      _congrats();
                                     }
                                   });
                                 }
@@ -373,6 +416,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                     _sum = sumc * 100 / sumt;
                                     if (sumc == sumt) {
                                       _updateScore();
+                                      _congrats();
                                     }
                                   });
                                 }
@@ -532,6 +576,10 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                         setState(() {
                                           _habits = habits;
                                           _sum = sumc * 100 / sumt;
+                                          if (sumc == sumt) {
+                                            _updateScore();
+                                            _congrats();
+                                          }
                                         });
                                       }
                                     },
@@ -571,6 +619,10 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                         setState(() {
                                           _habits = habits;
                                           _sum = sumc * 100 / sumt;
+                                          if (sumc == sumt) {
+                                            _updateScore();
+                                            _congrats();
+                                          }
                                         });
                                       }
                                     },

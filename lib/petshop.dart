@@ -57,7 +57,7 @@ class _PetShopWidgetState extends State<PetShopWidget> {
       setState(() {
         // _scorecounter = prefs2.getInt('scorecounter') ?? 0;
         _loadScore();
-        // _loadMyList();
+        _loadMyList();
       });
     });
   }
@@ -127,7 +127,7 @@ class _PetShopWidgetState extends State<PetShopWidget> {
       _buyPet(points);
       setState(() {
         _myList[index] = true;
-        //  _saveMyList();
+        _saveMyList();
       });
     } else if (buypet && _scorecounter < points) {
       _noMoney();
