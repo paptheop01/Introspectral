@@ -20,19 +20,19 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
   int _scorecounter = 0;
 
   void _loadScore() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+      _scorecounter = prefs.getInt('scorecounter') ?? 0;
     });
   }
 
   void _updateScore() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
       _scorecounter += 100;
     });
-    final scorecounter = await prefs2.setInt('scorecounter', _scorecounter);
+    final scorecounter = await prefs.setInt('scorecounter', _scorecounter);
   }
 
   void _addNewHabit() async {

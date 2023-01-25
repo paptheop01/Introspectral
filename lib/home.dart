@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
+import 'package:introspectral/petshop.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'habit.dart';
@@ -22,6 +23,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   int _consecutiveDays = 0;
   DateTime _lastUsedDate = DateTime.now();
   int checkin = 0;
+  int _selectedpet = 0;
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         _habits = habits;
         _habits4 = habits4;
         _loadCounter();
+        _loadSelectedPet();
       });
     });
   }
@@ -75,7 +78,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       setState(() {});
     }
   }
-
+/*
   void _seeJournal() async {
     Habit? habit = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => JournalScreenWidget()));
@@ -83,8 +86,40 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       setState(() {});
     }
   }
+  */
 
-  //double watercups =
+  _loadSelectedPet() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final selectedpet = prefs.getInt('selpet');
+    if (selectedpet != null) {
+      setState(() {
+        _selectedpet = selectedpet;
+      });
+    }
+  }
+
+  void _saveSelectedPet(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedpet = value;
+    });
+    final selectedpet = await prefs.setInt('selpet', _selectedpet);
+  }
+
+  String _getPetPath(int petID) {
+    switch (petID) {
+      case 0:
+        return 'assets/images/duck.png';
+      case 1:
+        return 'assets/images/sroom.png';
+      case 2:
+        return 'assets/images/fatdog.png';
+      case 3:
+        return 'assets/images/yoshi.png';
+    }
+    return '';
+  }
 
   Widget _buildHabitList() {
     return ListView.separated(
@@ -268,6 +303,17 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             ),
           ),
           Positioned(
+            top: 130,
+            right: 66,
+            child: SizedBox(
+              height: 60.0,
+              width: 60.0,
+              child: Container(
+                  alignment: Alignment.center,
+                  child: Image.asset(_getPetPath(_selectedpet))),
+            ),
+          ),
+          Positioned(
             top: 212,
             right: 55,
             child: SizedBox(
@@ -340,24 +386,14 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                           height: 25.0,
                         ),
                         Text(
-                          'Recording your thoughts can help you \n become more mindful and introspective',
+                          'Recording your thoughts can help you \n become more mindful and introspective \n so be sure to update your journal daily! ',
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(186, 255, 255, 255),
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Text(
-                          'Be sure to daily update\n your journal to track your day!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(186, 255, 255, 255),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+
                         /*
                         ElevatedButton(
                           key: UniqueKey(),
@@ -370,44 +406,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                   ],
                 ),
               ),
-              /*  Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 215, 255, 241),
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(5, 5),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                ), */
-              /*     Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: _updateCounter,
-                      child: Text('Check-in'),
-                    ),
-                    Image.asset(
-                      'assets/images/fire.png',
-                      width: 60,
-                      height: 60,
-                    ),
-                    Text('Streak: $_consecutiveDays',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          // fontWeight: FontWeight.bold,
-                        )),
-                  ],
-                ), */
             ),
           ),
         ],
