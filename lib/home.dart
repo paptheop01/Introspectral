@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introspectral/habitadd.dart';
-import 'package:introspectral/petshop.dart';
+import 'petshop.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'habit.dart';
@@ -345,66 +345,61 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
             offset: Offset(0, 205),
             child: Container(
               alignment: Alignment.bottomCenter,
-              child: Positioned(
-                key: UniqueKey(),
-                bottom: 30,
-                left: 150,
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    Column(
-                      key: UniqueKey(),
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Keep checking-in to stay consistent!',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color.fromARGB(126, 255, 255, 255),
-                          ),
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Column(
+                    key: UniqueKey(),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Keep checking-in to stay consistent!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromARGB(126, 255, 255, 255),
                         ),
-                        SizedBox(
-                          height: 13.0,
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      ElevatedButton(
+                        onPressed: _updateCounter,
+                        child: Text('Check-in'),
+                      ),
+                      Image.asset(
+                        'assets/images/fire.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                      Text(
+                        'Your Streak: $_consecutiveDays',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromARGB(255, 255, 255, 255),
                         ),
-                        ElevatedButton(
-                          onPressed: _updateCounter,
-                          child: Text('Check-in'),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        'Recording your thoughts can help you \n become more mindful and introspective \n so be sure to update your journal daily! ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(186, 255, 255, 255),
                         ),
-                        Image.asset(
-                          'assets/images/fire.png',
-                          width: 40,
-                          height: 40,
-                        ),
-                        Text(
-                          'Your Streak: $_consecutiveDays',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color.fromARGB(255, 255, 255, 255),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        Text(
-                          'Recording your thoughts can help you \n become more mindful and introspective \n so be sure to update your journal daily! ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(186, 255, 255, 255),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+                        textAlign: TextAlign.center,
+                      ),
 
-                        /*
+                      /*
                         ElevatedButton(
                           key: UniqueKey(),
                           onPressed: _updateCounter,
                           //MyInheritedWidget.of(context).changePage(1),
                           child: Text('Add log to journal'),
                         ), */
-                      ],
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

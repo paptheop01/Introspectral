@@ -52,8 +52,14 @@ void _loadalarm() async {
   var CurrentDate = DateTime.now();
   var last_alarm_date =
       DateTime.parse(prefsalarm.getString('last_alarm_date') ?? '2022-01-01');
+  Future<void> deleteDb() async {
+    deleteDatabase(p.join(await getDatabasesPath(), 'habits.db'));
+  }
+
   if (last_alarm_date == DateTime.parse('2022-01-01') ||
-      CurrentDate.day != last_alarm_date.day||CurrentDate.month != last_alarm_date.month ||CurrentDate.year != last_alarm_date.year) {
+      CurrentDate.day != last_alarm_date.day ||
+      CurrentDate.month != last_alarm_date.month ||
+      CurrentDate.year != last_alarm_date.year) {
     print('Update from init');
     updatereset();
   }
@@ -64,9 +70,10 @@ void _updatealarm() async {
 
   DateTime currentDate = DateTime.now();
   Timer timer;
-  timer= new  Timer(const Duration(seconds: 2),(){ var lastUsedDate =  prefsalarm.setString(
-      'last_alarm_date', currentDate.toIso8601String());});
- 
+  timer = new Timer(const Duration(seconds: 2), () {
+    var lastUsedDate =
+        prefsalarm.setString('last_alarm_date', currentDate.toIso8601String());
+  });
 }
 
 class MyApp extends StatelessWidget {
