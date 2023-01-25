@@ -52,9 +52,9 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
 
   // enhmerwnei timi ton points
   void _loadScore() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+      _scorecounter = prefs.getInt('scorecounter') ?? 0;
     });
   }
 
@@ -100,14 +100,16 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
         _loadScore();
       });
     });
-
-    SharedPreferences.getInstance().then((prefs2) {
+/*
+    SharedPreferences.getInstance().then((prefs) {
       // Get the value of the counter variable from shared preferences
       setState(() {
-        _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+        _scorecounter = prefs.getInt('scorecounter') ?? 0;
       });
-    });
+    });*/
+    //  SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      //  _scorecounter = prefs.getInt('scorecounter') ?? 0;
       _loadScore();
     });
   }
@@ -260,7 +262,7 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                     child: ElevatedButton(
                       child: Text("Trip down memory lane"),
                       onPressed: () {
-                        //_logmap();
+                        _logmap();
                       },
                     ),
                   ),
@@ -273,7 +275,11 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                         )),
                   ),
                   SizedBox(height: 10),
-                  Image.asset('assets/images/duck.png'),
+                  Image.asset(
+                    'assets/images/bulls.png',
+                    width: 70,
+                    height: 70,
+                  ),
                   SizedBox(height: 10),
                   Text(_scorecounter.toString() + ' points',
                       style: TextStyle(
@@ -285,6 +291,9 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                     child: ElevatedButton(
                       child: Text("Pet Shop!"),
                       onPressed: () {
+                        setState(() {
+                          _loadScore();
+                        });
                         _petshop();
                       },
                     ),

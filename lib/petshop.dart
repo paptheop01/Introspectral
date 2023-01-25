@@ -14,6 +14,7 @@ import 'stats.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class PetShopWidget extends StatefulWidget {
   const PetShopWidget({Key? key}) : super(key: key);
@@ -24,62 +25,176 @@ class PetShopWidget extends StatefulWidget {
 
 class _PetShopWidgetState extends State<PetShopWidget> {
   late int _scorecounter = 0;
-  late List<bool> _myList = [false, false, false, false];
+  int _selectedpet = 0;
+  int _button = 0;
+  int _button1 = 0;
+  int _button2 = 0;
+  int _button3 = 0;
+
+  _loadSelectedPet() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final selectedpet = prefs.getInt('selpet');
+    if (selectedpet != null) {
+      setState(() {
+        _selectedpet = selectedpet;
+      });
+    }
+  }
+
+  void _saveSelectedPet(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedpet = value;
+    });
+    final selectedpet = await prefs.setInt('selpet', _selectedpet);
+  }
+
+  _loadButton() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final buttonvalue = prefs.getInt('button');
+    if (buttonvalue != null) {
+      setState(() {
+        _button = buttonvalue;
+      });
+    }
+    final buttonvalue1 = prefs.getInt('button1');
+    if (buttonvalue1 != null) {
+      setState(() {
+        _button1 = buttonvalue1;
+      });
+    }
+    final buttonvalue2 = prefs.getInt('button2');
+    if (buttonvalue2 != null) {
+      setState(() {
+        _button2 = buttonvalue2;
+      });
+    }
+    final buttonvalue3 = prefs.getInt('button3');
+    if (buttonvalue3 != null) {
+      setState(() {
+        _button3 = buttonvalue3;
+      });
+    }
+  }
+
+  void _saveButton0(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _button = value;
+    });
+    final button = await prefs.setInt('button', _button);
+  }
+
+  void _saveButton1(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _button1 = value;
+    });
+    final button1 = await prefs.setInt('button1', _button1);
+  }
+
+  void _saveButton2(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _button2 = value;
+    });
+    final button2 = await prefs.setInt('button2', _button2);
+  }
+
+  void _saveButton3(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _button3 = value;
+    });
+    final button3 = await prefs.setInt('button3', _button3);
+  }
 
   void _loadScore() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _scorecounter = prefs2.getInt('scorecounter') ?? 0;
+      _scorecounter = prefs.getInt('scorecounter') ?? 0;
     });
   }
 
-  _saveMyList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('myList', _myList.toString());
+  _youhaveselected(String thepet) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            backgroundColor: Color(0xFF83B7B5),
+            title: Text('Nice Pet!'),
+            content: Text("You just selected " + thepet + " to be your pet!",
+                textAlign: TextAlign.center),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
-  _loadMyList() async {
+/*
+  void _loadMyList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? myListString = prefs.getString('myList')?.split(",");
+
     if (myListString != null) {
       List<bool> myList =
           myListString.map((String value) => value == "true").toList();
+
       setState(() {
         _myList = myList;
       });
     }
   }
 
+  void _saveMyList(bool value, int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('myList', _myList.toString());
+  }
+*/
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((prefs2) {
+    SharedPreferences.getInstance().then((prefs) {
       // Get the value of the counter variable from shared preferences
       setState(() {
-        // _scorecounter = prefs2.getInt('scorecounter') ?? 0;
         _loadScore();
-        // _loadMyList();
+        _loadButton();
+        _loadSelectedPet();
+        // initialize xeirokinita ta pets an thes
+
+        // _saveButton0(0);
+        //  _saveButton1(0);
+        // _saveButton2(0);
+        //  _saveButton3(0);
       });
     });
   }
 
   void _settozero(int points) async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _scorecounter = 0;
       //_loadScore();
     });
-    final scorecounter = await prefs2.setInt('scorecounter', _scorecounter);
+    final scorecounter = await prefs.setInt('scorecounter', _scorecounter);
   }
 
   void _buyPet(int points) async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _scorecounter -= points;
-      //_loadScore();
+      _loadScore();
     });
-    final scorecounter = await prefs2.setInt('scorecounter', _scorecounter);
+    final scorecounter = await prefs.setInt('scorecounter', _scorecounter);
   }
 
   _noMoney() async {
@@ -125,16 +240,30 @@ class _PetShopWidgetState extends State<PetShopWidget> {
 
     if (buypet && _scorecounter >= points) {
       _buyPet(points);
-      setState(() {
-        _myList[index] = true;
-        //  _saveMyList();
-      });
+      if (index == 0) _saveButton0(1);
+      if (index == 1) _saveButton1(1);
+      if (index == 2) _saveButton2(1);
+      if (index == 3) _saveButton3(1);
     } else if (buypet && _scorecounter < points) {
       _noMoney();
     }
     setState(() {
       _loadScore();
     });
+  }
+
+  String _getPetPath(int petID) {
+    switch (petID) {
+      case 0:
+        return 'assets/images/duck.png';
+      case 1:
+        return 'assets/images/sroom.png';
+      case 2:
+        return 'assets/images/fatdog.png';
+      case 3:
+        return 'assets/images/yoshi.png';
+    }
+    return '';
   }
 
   @override
@@ -149,18 +278,22 @@ class _PetShopWidgetState extends State<PetShopWidget> {
               width: 80,
               height: 80,
             ),
-            Text('500',
+            Text('10',
                 style: TextStyle(
                   fontSize: 18,
                   color: Color.fromARGB(255, 255, 255, 255),
                 )),
             ElevatedButton(
-              child: !_myList[0] ? Text('Buy') : Text('Select'),
+              child: (_button == 0) ? Text('Buy') : Text('Select'),
               onPressed: () {
-                if (!_myList[0]) {
-                  _buyPetPopup(50, 0);
+                if (_button == 0) {
+                  _buyPetPopup(10, 0);
+                  // _saveButton0(1);
                 }
-                // _settozero(0);
+                if (_button == 1) {
+                  _youhaveselected('the duck');
+                  _saveSelectedPet(0);
+                }
               },
             )
           ],
@@ -172,15 +305,22 @@ class _PetShopWidgetState extends State<PetShopWidget> {
               width: 80,
               height: 80,
             ),
-            Text('1500',
+            Text('25',
                 style: TextStyle(
                   fontSize: 18,
                   color: Color.fromARGB(255, 255, 255, 255),
                 )),
             ElevatedButton(
-              child: Text("Buy"),
+              child: (_button1 == 0) ? Text('Buy') : Text('Select'),
               onPressed: () {
-                _buyPetPopup(150, 1);
+                if (_button1 == 0) {
+                  _buyPetPopup(25, 1);
+                  // _saveButton1(1);
+                }
+                if (_button1 == 1) {
+                  _youhaveselected('the scroom');
+                  _saveSelectedPet(1);
+                }
               },
             )
           ],
@@ -192,15 +332,23 @@ class _PetShopWidgetState extends State<PetShopWidget> {
               width: 80,
               height: 80,
             ),
-            Text('5000',
+            Text('50',
                 style: TextStyle(
                   fontSize: 18,
                   color: Color.fromARGB(255, 255, 255, 255),
                 )),
             ElevatedButton(
-              child: Text("Buy"),
+              child: (_button2 == 0) ? Text('Buy') : Text('Select'),
               onPressed: () {
-                _buyPetPopup(5000, 2);
+                if (_button2 == 0) {
+                  _buyPetPopup(50, 2);
+
+                  // _saveButton2(1);
+                }
+                if (_button2 == 1) {
+                  _youhaveselected('the fat dog');
+                  _saveSelectedPet(2);
+                }
               },
             )
           ],
@@ -212,15 +360,22 @@ class _PetShopWidgetState extends State<PetShopWidget> {
               width: 80,
               height: 80,
             ),
-            Text('15000',
+            Text('150',
                 style: TextStyle(
                   fontSize: 18,
                   color: Color.fromARGB(255, 255, 255, 255),
                 )),
             ElevatedButton(
-              child: Text("Buy"),
+              child: (_button3 == 0) ? Text('Buy') : Text('Select'),
               onPressed: () {
-                _buyPetPopup(15000, 3);
+                if (_button3 == 0) {
+                  _buyPetPopup(150, 3);
+                  // _saveButton3(1);
+                }
+                if (_button3 == 1) {
+                  _youhaveselected('Yoshi');
+                  _saveSelectedPet(3);
+                }
               },
             )
           ],
@@ -251,7 +406,7 @@ class _PetShopWidgetState extends State<PetShopWidget> {
             child: thepetshop(),
           ),
           Transform.translate(
-            offset: Offset(0, 165),
+            offset: Offset(0, 135),
             child: Container(
               alignment: Alignment.center,
               child: Text(
@@ -262,6 +417,23 @@ class _PetShopWidgetState extends State<PetShopWidget> {
                     // fontWeight: FontWeight.bold,
                   )),
             ),
+          ),
+          Transform.translate(
+            offset: Offset(0, 185),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text('This is your pet:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  )),
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(0, 265),
+            child: Container(
+                alignment: Alignment.center,
+                child: Image.asset(_getPetPath(_selectedpet))),
           ),
         ]),
       ),

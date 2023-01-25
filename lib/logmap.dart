@@ -12,7 +12,7 @@ import 'package:audio_service/audio_service.dart';
 import 'stats.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapLogWidget extends StatefulWidget {
   const MapLogWidget({Key? key}) : super(key: key);
@@ -24,6 +24,7 @@ class MapLogWidget extends StatefulWidget {
 class _MapLogWidgetState extends State<MapLogWidget> {
   late SQLservice sqLiteservice;
   List<Log> _logs = <Log>[];
+  /*
   List<LatLng> coordinates = [
     LatLng(37.4219999, -122.0840575),
     LatLng(37.4629101, -122.2449094),
@@ -38,7 +39,7 @@ class _MapLogWidgetState extends State<MapLogWidget> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-
+*/
   @override
   void initState() {
     super.initState();
@@ -53,21 +54,60 @@ class _MapLogWidgetState extends State<MapLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 202, 212, 211),
-      appBar: AppBar(
-        title: const Text('Map OverView'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/back.png"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.1),
+            BlendMode.darken,
+          ),
+        ),
       ),
-      body: Stack(children: <Widget>[
-        GoogleMap(
+      child: Scaffold(
+        //backgroundColor: Color.fromARGB(255, 202, 212, 211),
+        appBar: AppBar(
+          title: const Text('Map OverView'),
+        ),
+        body: Column(children: <Widget>[
+          /*GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
             target: _center,
             zoom: 11.0,
           ),
-        ),
-        //_buildLogList(),
-      ]),
+        ), */
+          //_buildLogList(),
+          SizedBox(
+            height: 18.0,
+          ),
+          Text('You have been to many places...',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255),
+              )),
+          Transform.translate(
+            offset: Offset(0, 35),
+            child: Container(
+              alignment: Alignment.center,
+              child: Image.asset(
+                'assets/images/maplog.png',
+                width: 320,
+                height: 320,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 80.0,
+          ),
+          Text('...and have many more to explore!',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255),
+              )),
+        ]),
+      ),
     );
   }
 }
