@@ -26,9 +26,10 @@ void updatereset() {
   DateTime time = DateTime.now();
   late SQLservice sqLiteservice;
   sqLiteservice = SQLservice();
+  
   sqLiteservice.updatereset();
   _updatealarm();
-  print('$time Tried to update');
+  
 }
 
 void main() async {
@@ -46,6 +47,7 @@ void main() async {
 }
 
 void _loadalarm() async {
+  
   SharedPreferences prefsalarm = await SharedPreferences.getInstance();
   var CurrentDate = DateTime.now();
   var last_alarm_date =
@@ -305,6 +307,9 @@ class SQLservice {
       },
       version: 1,
     );
+  }
+  Future<void> deleteDb() async {
+    deleteDatabase(p.join(await getDatabasesPath(), 'habits.db'));
   }
 
   // TODO: Create CRUD methods for logs
