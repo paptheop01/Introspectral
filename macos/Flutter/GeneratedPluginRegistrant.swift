@@ -9,9 +9,9 @@ import audio_service
 import audio_session
 import audioplayers_darwin
 import geolocator_apple
-import path_provider_macos
+import path_provider_foundation
 import record_macos
-import shared_preferences_macos
+import shared_preferences_foundation
 import sqflite
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
