@@ -12,6 +12,7 @@ import 'package:audio_service/audio_service.dart';
 import 'stats.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,19 +28,52 @@ class _MapLogWidgetState extends State<MapLogWidget> {
   late SQLservice sqLiteservice;
   List<Log> _logs = <Log>[];
 
-  List<LatLng> coordinates = [
-    LatLng(37.4219999, -122.0840575),
-    LatLng(37.4629101, -122.2449094),
-    LatLng(37.3092293, -122.1136845),
-    LatLng(37.2742199, -122.0328104)
-  ];
+  late LatLngBounds latlngBounds;
+
+  Set<Marker> _markers = <Marker>{};
 
   late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  void _onMapCreated(GoogleMapController controller) async {
+    setState(() {
+      latlngBounds = LatLngBounds(
+          southwest: LatLng(37.93, 23.56), northeast: LatLng(38.10, 24.04));
+      mapController = controller;
+      var i = 0;
+      for (var log in _logs) {
+        if (log.latitude != null && log.longitude != null) {
+          if (i == 0) {
+            i++;
+            latlngBounds = LatLngBounds(
+                southwest: LatLng(log.latitude! - 0.1, log.longitude! - 0.1),
+                northeast: LatLng(log.latitude! + 0.1, log.longitude! + 0.1));
+          } else {
+            latlngBounds = LatLngBounds(
+                southwest: LatLng(
+                    // Update the bounds to include the new marker
+                    min(latlngBounds.southwest.latitude, log.latitude!),
+                    min(latlngBounds.southwest.longitude, log.longitude!)),
+                northeast: LatLng(
+                    max(latlngBounds.northeast.latitude, log.latitude!),
+                    max(latlngBounds.northeast.longitude, log.longitude!)));
+          }
+          _markers.add(Marker(
+            markerId: MarkerId(log.id.toString()),
+            position: LatLng(log.latitude!, log.longitude!),
+            infoWindow: InfoWindow(
+              title: log.text,
+              snippet: log.dateTime.toString(),
+            ),
+          ));
+        }
+      }
+    });
+    Future.microtask(() {
+      // This is needed to wait for the map to be rendered
+      controller.animateCamera(CameraUpdate.newLatLngBounds(latlngBounds, 50));
+    });
   }
 
   @override
@@ -78,6 +112,7 @@ class _MapLogWidgetState extends State<MapLogWidget> {
             target: _center,
             zoom: 11.0,
           ),
+          markers: Set<Marker>.of(_markers),
         ),
       ),
     );
