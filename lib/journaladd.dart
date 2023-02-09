@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/animation.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 
@@ -37,6 +39,8 @@ class _AddLogWidgetState extends State<AddLogWidget> {
     ];
   }
 
+  final PageStorageKey _pageStorageKey = const PageStorageKey("uniqueKey");
+  // Needed to preserve the state of the page view
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,14 +58,91 @@ class _AddLogWidgetState extends State<AddLogWidget> {
           appBar: AppBar(
             title: const Text('Add Log'),
           ),
-          body: PageView(
-            controller: _addLogpageController,
-            children: _addLogPages,
-            onPageChanged: (int index) {
-              setState(() {
-                _addLogIndex = index;
-              });
-            },
+          body: Stack(
+            children: [
+              PageView(
+                key: _pageStorageKey,
+                controller: _addLogpageController,
+                children: _addLogPages,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _addLogIndex = index;
+                  });
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Stack(
+                      textDirection: TextDirection.rtl,
+                      children: _addLogIndex != 2
+                          ? [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 0),
+                                child: Pulse(
+                                    delay: Duration(milliseconds: 1),
+                                    infinite: true,
+                                    child: Icon(
+                                      Icons.arrow_right,
+                                      size: 70.0,
+                                      color: Color.fromARGB(255, 179, 30, 154),
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 15),
+                                child: Pulse(
+                                    delay: Duration(milliseconds: 200),
+                                    infinite: true,
+                                    child: Icon(
+                                      Icons.arrow_right,
+                                      size: 70.0,
+                                      color: Color.fromARGB(255, 179, 30, 154),
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30),
+                                child: Pulse(
+                                    delay: Duration(milliseconds: 400),
+                                    infinite: true,
+                                    child: Icon(
+                                      Icons.arrow_right,
+                                      size: 70.0,
+                                      color: Color.fromARGB(255, 179, 30, 154),
+                                    )),
+                              ),
+                            ]
+                          : [
+                              FadeOutLeftBig(
+                                  child: Icon(
+                                Icons.arrow_right,
+                                size: 70.0,
+                                color: Color.fromARGB(255, 179, 30, 154),
+                              )),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 15),
+                                child: FadeOutLeftBig(
+                                    //delay: Duration(milliseconds: 200),
+                                    child: Icon(
+                                  Icons.arrow_right,
+                                  size: 70.0,
+                                  color: Color.fromARGB(255, 179, 30, 154),
+                                )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30),
+                                child: FadeOutLeftBig(
+                                    //delay: Duration(milliseconds: 400),
+                                    child: Icon(
+                                  Icons.arrow_right,
+                                  size: 70.0,
+                                  color: Color.fromARGB(255, 179, 30, 154),
+                                )),
+                              ),
+                            ],
+                    )),
+              ),
+            ],
           ),
         ));
   }
@@ -386,7 +467,8 @@ class MediaPage extends StatefulWidget {
   _MediaPageState createState() => _MediaPageState();
 }
 
-class _MediaPageState extends State<MediaPage> {
+class _MediaPageState extends State<MediaPage>
+    with AutomaticKeepAliveClientMixin {
   XFile? _image;
   final ImagePicker _picker = ImagePicker();
   Record? _recorder = Record();
@@ -397,6 +479,9 @@ class _MediaPageState extends State<MediaPage> {
   double? _latitude;
   double? _longitude;
   String? _city;
+
+  @override
+  bool get wantKeepAlive => true;
 
   void _takePhoto() async {
     final permission = await Permission.camera.request();
@@ -490,25 +575,61 @@ class _MediaPageState extends State<MediaPage> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        const SizedBox(
+          height: 40,
+        ),
         ElevatedButton(
           onPressed: _isRecording ? null : _startRecording,
-          child: Text(_isRecording ? "Recording..." : "Start Recording"),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(_isRecording ? "Recording...   " : "Start Recording   "),
+              Icon(Icons.mic)
+            ],
+          ),
         ),
         ElevatedButton(
           onPressed: _isRecording ? _stopRecording : null,
-          child: Text("Stop Recording"),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [Text("Stop Recording    "), Icon(Icons.stop)],
+          ),
+        ),
+        const SizedBox(
+          height: 40,
         ),
         ElevatedButton(
           onPressed: _takePhoto,
-          child: Text("Take a Photo"),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [Text("Take a Picture    "), Icon(Icons.camera_alt)],
+          ),
+        ),
+        const SizedBox(
+          height: 40,
         ),
         ElevatedButton(
-          onPressed: _getLocation,
-          child: Text("Save my Location"),
+            onPressed: _getLocation,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Save my Location    "),
+                Icon(Icons.location_pin)
+              ],
+            )),
+        const SizedBox(
+          height: 250,
         ),
         ElevatedButton(
           onPressed: _submit,
-          child: Text("Submit"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 92, 197, 31),
+          ),
+          child: Text("Add Entry to Journal"),
         ),
         if (imagePath != null) Text("Photo Captured!"),
         if (_recordingFile != null) Text("Audio recorded!"),
