@@ -70,7 +70,7 @@ class _MapLogWidgetState extends State<MapLogWidget> {
         }
       }
     });
-    Future.microtask(() {
+    Future.delayed(Duration(seconds: 2), () {
       // This is needed to wait for the map to be rendered
       controller.animateCamera(CameraUpdate.newLatLngBounds(latlngBounds, 50));
     });
