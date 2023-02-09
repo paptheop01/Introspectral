@@ -107,7 +107,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                         padding: const EdgeInsets.only(
                                             right: 4.0, top: 8.0, bottom: 8.0),
                                         child: SizedBox(
-                                          width: 107,
+                                          width: 93,
                                           child: TextFormField(
                                             maxLength: 2,
                                             maxLines: 1,
