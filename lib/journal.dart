@@ -51,11 +51,14 @@ class _JournalScreenWidgetState extends State<JournalScreenWidget> {
         Container(),
         _buildLogList(),
       ]),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _addNewLog,
-        backgroundColor: Colors.teal,
-        tooltip: 'Add Habit',
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 20.0, right: 20.0),
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: _addNewLog,
+          backgroundColor: Colors.teal,
+          tooltip: 'Add Habit',
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

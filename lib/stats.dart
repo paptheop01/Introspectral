@@ -260,7 +260,14 @@ class _StatsScreenWidgetState extends State<StatsScreenWidget>
                 children: <Widget>[
                   Container(
                     child: ElevatedButton(
-                      child: Text("Trip down memory lane"),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("Trip Down Memory Map    "),
+                          Icon(Icons.map)
+                        ],
+                      ),
                       onPressed: () {
                         _logmap();
                       },

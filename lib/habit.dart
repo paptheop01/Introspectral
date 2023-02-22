@@ -697,11 +697,14 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
         Container(),
         _buildHabitList(),
       ]),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _addNewHabit,
-        backgroundColor: Colors.teal,
-        tooltip: 'Add Habit',
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 20.0, right: 20.0),
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: _addNewHabit,
+          backgroundColor: Colors.teal,
+          tooltip: 'Add Habit',
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
