@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:introspectral/habitadd.dart';
 import 'main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
@@ -107,7 +106,7 @@ class _HabitListScreenWidgetState extends State<HabitListScreenWidget> {
                                         padding: const EdgeInsets.only(
                                             right: 4.0, top: 8.0, bottom: 8.0),
                                         child: SizedBox(
-                                          width: 93,
+                                          width: 91,
                                           child: TextFormField(
                                             maxLength: 2,
                                             maxLines: 1,

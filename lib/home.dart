@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:introspectral/habitadd.dart';
 import 'petshop.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
@@ -363,8 +362,8 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                         height: 13.0,
                       ),
                       ElevatedButton(
-                        onPressed: _updateCounter,
                         child: Text('Check-in'),
+                        onPressed: _updateCounter,
                       ),
                       Image.asset(
                         'assets/images/fire.png',
