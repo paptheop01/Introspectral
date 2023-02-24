@@ -16,6 +16,13 @@ Introspectral is here to guide you through your daily routine, tasks, habits and
 
 - Journaling : Use photos, voice messages as well as a vast list of emojis to write down your daily experiences and track your mood. You can reflect upon those notes later in the future.
 
+
+## Authors
+- Theodoros Papadopoulos  03119017 [paptheop01](https://github.com/paptheop01)
+- Chrysa Pratikaki        03119131 [cpratikaki](https://github.com/cpratikaki)
+- Ioannis Protogeros      03119008 [vanourogeros](https://github.com/vanourogeros)
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
